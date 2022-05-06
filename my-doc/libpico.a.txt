@@ -1,0 +1,842 @@
+In archive libpico.a:
+
+swdloader.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <_ZN10CSWDLoaderC1Ejjjj>:
+   0:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+   4:	e1a04000 	mov	r4, r0
+   8:	e2930000 	adds	r0, r3, #0
+   c:	13a00001 	movne	r0, #1
+  10:	e1a06001 	mov	r6, r1
+  14:	e5840000 	str	r0, [r4]
+  18:	e59d1018 	ldr	r1, [sp, #24]
+  1c:	e59f00a8 	ldr	r0, [pc, #168]	; cc <_ZN10CSWDLoaderC1Ejjjj+0xcc>
+  20:	e1a07002 	mov	r7, r2
+  24:	e1a08003 	mov	r8, r3
+  28:	ebfffffe 	bl	0 <__aeabi_uidiv>
+  2c:	e2845008 	add	r5, r4, #8
+  30:	e5840004 	str	r0, [r4, #4]
+  34:	e1a00005 	mov	r0, r5
+  38:	ebfffffe 	bl	0 <_ZN8CGPIOPinC1Ev>
+  3c:	e1a01006 	mov	r1, r6
+  40:	e3a03000 	mov	r3, #0
+  44:	e3a02001 	mov	r2, #1
+  48:	e2840030 	add	r0, r4, #48	; 0x30
+  4c:	e2846058 	add	r6, r4, #88	; 0x58
+  50:	ebfffffe 	bl	0 <_ZN8CGPIOPinC1Ej9TGPIOModeP12CGPIOManager>
+  54:	e3a03000 	mov	r3, #0
+  58:	e1a01007 	mov	r1, r7
+  5c:	e3a02001 	mov	r2, #1
+  60:	e1a00006 	mov	r0, r6
+  64:	ebfffffe 	bl	0 <_ZN8CGPIOPinC1Ej9TGPIOModeP12CGPIOManager>
+  68:	ebfffffe 	bl	0 <_ZN6CTimer3GetEv>
+  6c:	e5943000 	ldr	r3, [r4]
+  70:	e5840080 	str	r0, [r4, #128]	; 0x80
+  74:	e3530000 	cmp	r3, #0
+  78:	1a000004 	bne	90 <_ZN10CSWDLoaderC1Ejjjj+0x90>
+  7c:	e1a00006 	mov	r0, r6
+  80:	e3a01002 	mov	r1, #2
+  84:	ebfffffe 	bl	0 <_ZN8CGPIOPin11SetPullModeE13TGPIOPullMode>
+  88:	e1a00004 	mov	r0, r4
+  8c:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+  90:	e1a01008 	mov	r1, r8
+  94:	e1a00005 	mov	r0, r5
+  98:	ebfffffe 	bl	0 <_ZN8CGPIOPin9AssignPinEj>
+  9c:	e3a02000 	mov	r2, #0
+  a0:	e1a00005 	mov	r0, r5
+  a4:	e1a01002 	mov	r1, r2
+  a8:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+  ac:	e1a00005 	mov	r0, r5
+  b0:	e3a01001 	mov	r1, #1
+  b4:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+  b8:	e1a00005 	mov	r0, r5
+  bc:	e3a02000 	mov	r2, #0
+  c0:	e3a01001 	mov	r1, #1
+  c4:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+  c8:	eaffffeb 	b	7c <_ZN10CSWDLoaderC1Ejjjj+0x7c>
+  cc:	0007a120 	.word	0x0007a120
+
+000000d0 <_ZN10CSWDLoader10WriteClockEv>:
+  d0:	e92d4070 	push	{r4, r5, r6, lr}
+  d4:	e1a04000 	mov	r4, r0
+  d8:	e2806030 	add	r6, r0, #48	; 0x30
+  dc:	e1a00006 	mov	r0, r6
+  e0:	e3a01000 	mov	r1, #0
+  e4:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+  e8:	e5943080 	ldr	r3, [r4, #128]	; 0x80
+  ec:	e5940004 	ldr	r0, [r4, #4]
+  f0:	e5933024 	ldr	r3, [r3, #36]	; 0x24
+  f4:	e59f5038 	ldr	r5, [pc, #56]	; 134 <_ZN10CSWDLoader10WriteClockEv+0x64>
+  f8:	e0000390 	mul	r0, r0, r3
+  fc:	e0803095 	umull	r3, r0, r5, r0
+ 100:	e1a00320 	lsr	r0, r0, #6
+ 104:	ebfffffe 	bl	0 <DelayLoop>
+ 108:	e1a00006 	mov	r0, r6
+ 10c:	e3a01001 	mov	r1, #1
+ 110:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+ 114:	e5943080 	ldr	r3, [r4, #128]	; 0x80
+ 118:	e5940004 	ldr	r0, [r4, #4]
+ 11c:	e5933024 	ldr	r3, [r3, #36]	; 0x24
+ 120:	e0000390 	mul	r0, r0, r3
+ 124:	e0803095 	umull	r3, r0, r5, r0
+ 128:	e8bd4070 	pop	{r4, r5, r6, lr}
+ 12c:	e1a00320 	lsr	r0, r0, #6
+ 130:	eafffffe 	b	0 <DelayLoop>
+ 134:	10624dd3 	.word	0x10624dd3
+
+00000138 <_ZN10CSWDLoader9WriteBitsEjj>:
+ 138:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+ 13c:	e1a04002 	mov	r4, r2
+ 140:	e2806058 	add	r6, r0, #88	; 0x58
+ 144:	e1a07000 	mov	r7, r0
+ 148:	e1a05001 	mov	r5, r1
+ 14c:	e1a00006 	mov	r0, r6
+ 150:	e3a02000 	mov	r2, #0
+ 154:	e3a01001 	mov	r1, #1
+ 158:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ 15c:	e3540000 	cmp	r4, #0
+ 160:	08bd81f0 	popeq	{r4, r5, r6, r7, r8, pc}
+ 164:	e2444001 	sub	r4, r4, #1
+ 168:	e2051001 	and	r1, r5, #1
+ 16c:	e1a00006 	mov	r0, r6
+ 170:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+ 174:	e2444001 	sub	r4, r4, #1
+ 178:	e1a00007 	mov	r0, r7
+ 17c:	ebfffffe 	bl	d0 <_ZN10CSWDLoader10WriteClockEv>
+ 180:	e3740001 	cmn	r4, #1
+ 184:	e1a050a5 	lsr	r5, r5, #1
+ 188:	1afffff6 	bne	168 <_ZN10CSWDLoader9WriteBitsEjj+0x30>
+ 18c:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+
+00000190 <_ZN10CSWDLoader11Dormant2SWDEv>:
+ 190:	e92d4010 	push	{r4, lr}
+ 194:	e1a04000 	mov	r4, r0
+ 198:	e3a02008 	mov	r2, #8
+ 19c:	e3a010ff 	mov	r1, #255	; 0xff
+ 1a0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1a4:	e1a00004 	mov	r0, r4
+ 1a8:	e3a02020 	mov	r2, #32
+ 1ac:	e59f1054 	ldr	r1, [pc, #84]	; 208 <_ZN10CSWDLoader11Dormant2SWDEv+0x78>
+ 1b0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1b4:	e1a00004 	mov	r0, r4
+ 1b8:	e3a02020 	mov	r2, #32
+ 1bc:	e59f1048 	ldr	r1, [pc, #72]	; 20c <_ZN10CSWDLoader11Dormant2SWDEv+0x7c>
+ 1c0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1c4:	e1a00004 	mov	r0, r4
+ 1c8:	e3a02020 	mov	r2, #32
+ 1cc:	e59f103c 	ldr	r1, [pc, #60]	; 210 <_ZN10CSWDLoader11Dormant2SWDEv+0x80>
+ 1d0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1d4:	e1a00004 	mov	r0, r4
+ 1d8:	e3a02020 	mov	r2, #32
+ 1dc:	e59f1030 	ldr	r1, [pc, #48]	; 214 <_ZN10CSWDLoader11Dormant2SWDEv+0x84>
+ 1e0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1e4:	e1a00004 	mov	r0, r4
+ 1e8:	e3a02004 	mov	r2, #4
+ 1ec:	e3a01000 	mov	r1, #0
+ 1f0:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 1f4:	e1a00004 	mov	r0, r4
+ 1f8:	e8bd4010 	pop	{r4, lr}
+ 1fc:	e3a02008 	mov	r2, #8
+ 200:	e3a0101a 	mov	r1, #26
+ 204:	eafffffe 	b	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 208:	6209f392 	.word	0x6209f392
+ 20c:	86852d95 	.word	0x86852d95
+ 210:	e3ddafe9 	.word	0xe3ddafe9
+ 214:	19bc0ea2 	.word	0x19bc0ea2
+
+00000218 <_ZN10CSWDLoader9LineResetEv>:
+ 218:	e92d4010 	push	{r4, lr}
+ 21c:	e1a04000 	mov	r4, r0
+ 220:	e3a02020 	mov	r2, #32
+ 224:	e3e01000 	mvn	r1, #0
+ 228:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 22c:	e1a00004 	mov	r0, r4
+ 230:	e8bd4010 	pop	{r4, lr}
+ 234:	e3a0201c 	mov	r2, #28
+ 238:	e59f1000 	ldr	r1, [pc]	; 240 <_ZN10CSWDLoader9LineResetEv+0x28>
+ 23c:	eafffffe 	b	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 240:	000fffff 	.word	0x000fffff
+
+00000244 <_ZN10CSWDLoader9WriteIdleEv>:
+ 244:	e92d4070 	push	{r4, r5, r6, lr}
+ 248:	e1a05000 	mov	r5, r0
+ 24c:	e3a02008 	mov	r2, #8
+ 250:	e3a01000 	mov	r1, #0
+ 254:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 258:	e2854058 	add	r4, r5, #88	; 0x58
+ 25c:	e2850030 	add	r0, r5, #48	; 0x30
+ 260:	e3a01000 	mov	r1, #0
+ 264:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+ 268:	e1a00004 	mov	r0, r4
+ 26c:	e3a01001 	mov	r1, #1
+ 270:	e3a02000 	mov	r2, #0
+ 274:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ 278:	e1a00004 	mov	r0, r4
+ 27c:	e8bd4070 	pop	{r4, r5, r6, lr}
+ 280:	e3a01000 	mov	r1, #0
+ 284:	eafffffe 	b	0 <_ZN8CGPIOPin5WriteEj>
+
+00000288 <_ZN10CSWDLoader16BeginTransactionEv>:
+ 288:	e92d4010 	push	{r4, lr}
+ 28c:	e1a04000 	mov	r4, r0
+ 290:	e3a00001 	mov	r0, #1
+ 294:	ebfffffe 	bl	0 <EnterCritical>
+ 298:	e1a00004 	mov	r0, r4
+ 29c:	e8bd4010 	pop	{r4, lr}
+ 2a0:	eafffffe 	b	244 <_ZN10CSWDLoader9WriteIdleEv>
+
+000002a4 <_ZN10CSWDLoader14EndTransactionEv>:
+ 2a4:	e92d4010 	push	{r4, lr}
+ 2a8:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 2ac:	e8bd4010 	pop	{r4, lr}
+ 2b0:	eafffffe 	b	0 <LeaveCritical>
+
+000002b4 <_ZN10CSWDLoader8ReadBitsEj>:
+ 2b4:	e3a02000 	mov	r2, #0
+ 2b8:	e92d47f0 	push	{r4, r5, r6, r7, r8, r9, sl, lr}
+ 2bc:	e1a06001 	mov	r6, r1
+ 2c0:	e2807058 	add	r7, r0, #88	; 0x58
+ 2c4:	e1a08000 	mov	r8, r0
+ 2c8:	e1a01002 	mov	r1, r2
+ 2cc:	e1a00007 	mov	r0, r7
+ 2d0:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ 2d4:	e3560000 	cmp	r6, #0
+ 2d8:	0a00000c 	beq	310 <_ZN10CSWDLoader8ReadBitsEj+0x5c>
+ 2dc:	e2469001 	sub	r9, r6, #1
+ 2e0:	e1a05009 	mov	r5, r9
+ 2e4:	e3a06000 	mov	r6, #0
+ 2e8:	e1a00007 	mov	r0, r7
+ 2ec:	ebfffffe 	bl	0 <_ZNK8CGPIOPin4ReadEv>
+ 2f0:	e1a04000 	mov	r4, r0
+ 2f4:	e2455001 	sub	r5, r5, #1
+ 2f8:	e1a00008 	mov	r0, r8
+ 2fc:	ebfffffe 	bl	d0 <_ZN10CSWDLoader10WriteClockEv>
+ 300:	e1a04914 	lsl	r4, r4, r9
+ 304:	e3750001 	cmn	r5, #1
+ 308:	e18460a6 	orr	r6, r4, r6, lsr #1
+ 30c:	1afffff5 	bne	2e8 <_ZN10CSWDLoader8ReadBitsEj+0x34>
+ 310:	e1a00006 	mov	r0, r6
+ 314:	e8bd87f0 	pop	{r4, r5, r6, r7, r8, r9, sl, pc}
+
+00000318 <_ZN10CSWDLoader9WriteDataEhj>:
+ 318:	e92d40f0 	push	{r4, r5, r6, r7, lr}
+ 31c:	e1a06001 	mov	r6, r1
+ 320:	e24dd014 	sub	sp, sp, #20
+ 324:	e1a07002 	mov	r7, r2
+ 328:	e3a02007 	mov	r2, #7
+ 32c:	e1a04000 	mov	r4, r0
+ 330:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 334:	e3160080 	tst	r6, #128	; 0x80
+ 338:	0a000025 	beq	3d4 <_ZN10CSWDLoader9WriteDataEhj+0xbc>
+ 33c:	e3a01002 	mov	r1, #2
+ 340:	e1a00004 	mov	r0, r4
+ 344:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 348:	e3a01003 	mov	r1, #3
+ 34c:	e1a00004 	mov	r0, r4
+ 350:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 354:	e1a05000 	mov	r5, r0
+ 358:	e3a01001 	mov	r1, #1
+ 35c:	e1a00004 	mov	r0, r4
+ 360:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 364:	e3550001 	cmp	r5, #1
+ 368:	1a00000c 	bne	3a0 <_ZN10CSWDLoader9WriteDataEhj+0x88>
+ 36c:	e1a01007 	mov	r1, r7
+ 370:	e3a02020 	mov	r2, #32
+ 374:	e1a00004 	mov	r0, r4
+ 378:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 37c:	e1a00007 	mov	r0, r7
+ 380:	ebfffffe 	bl	0 <__paritysi2>
+ 384:	e1a02005 	mov	r2, r5
+ 388:	e1a01000 	mov	r1, r0
+ 38c:	e1a00004 	mov	r0, r4
+ 390:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 394:	e1a00005 	mov	r0, r5
+ 398:	e28dd014 	add	sp, sp, #20
+ 39c:	e8bd80f0 	pop	{r4, r5, r6, r7, pc}
+ 3a0:	e1a00004 	mov	r0, r4
+ 3a4:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 3a8:	ebfffffe 	bl	0 <LeaveCritical>
+ 3ac:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 3b0:	e58d5008 	str	r5, [sp, #8]
+ 3b4:	e1cd60f0 	strd	r6, [sp]
+ 3b8:	e59f3024 	ldr	r3, [pc, #36]	; 3e4 <_ZN10CSWDLoader9WriteDataEhj+0xcc>
+ 3bc:	e3a02002 	mov	r2, #2
+ 3c0:	e59f1020 	ldr	r1, [pc, #32]	; 3e8 <_ZN10CSWDLoader9WriteDataEhj+0xd0>
+ 3c4:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 3c8:	e3a00000 	mov	r0, #0
+ 3cc:	e28dd014 	add	sp, sp, #20
+ 3d0:	e8bd80f0 	pop	{r4, r5, r6, r7, pc}
+ 3d4:	e3a02e17 	mov	r2, #368	; 0x170
+ 3d8:	e59f100c 	ldr	r1, [pc, #12]	; 3ec <_ZN10CSWDLoader9WriteDataEhj+0xd4>
+ 3dc:	e59f000c 	ldr	r0, [pc, #12]	; 3f0 <_ZN10CSWDLoader9WriteDataEhj+0xd8>
+ 3e0:	ebfffffe 	bl	0 <assertion_failed>
+ 3e4:	00000020 	.word	0x00000020
+	...
+ 3f0:	00000010 	.word	0x00000010
+
+000003f4 <_ZN10CSWDLoader8WriteMemEjj>:
+ 3f4:	e92d4070 	push	{r4, r5, r6, lr}
+ 3f8:	e1a05002 	mov	r5, r2
+ 3fc:	e1a02001 	mov	r2, r1
+ 400:	e3a0108b 	mov	r1, #139	; 0x8b
+ 404:	e1a04000 	mov	r4, r0
+ 408:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 40c:	e3500000 	cmp	r0, #0
+ 410:	08bd8070 	popeq	{r4, r5, r6, pc}
+ 414:	e1a02005 	mov	r2, r5
+ 418:	e1a00004 	mov	r0, r4
+ 41c:	e8bd4070 	pop	{r4, r5, r6, lr}
+ 420:	e3a010bb 	mov	r1, #187	; 0xbb
+ 424:	eafffffe 	b	318 <_ZN10CSWDLoader9WriteDataEhj>
+
+00000428 <_ZN10CSWDLoader5StartEj>:
+ 428:	e92d4070 	push	{r4, r5, r6, lr}
+ 42c:	e1a04000 	mov	r4, r0
+ 430:	e1a05001 	mov	r5, r1
+ 434:	e3a00001 	mov	r0, #1
+ 438:	ebfffffe 	bl	0 <EnterCritical>
+ 43c:	e1a00004 	mov	r0, r4
+ 440:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 444:	e1a02005 	mov	r2, r5
+ 448:	e1a00004 	mov	r0, r4
+ 44c:	e59f106c 	ldr	r1, [pc, #108]	; 4c0 <_ZN10CSWDLoader5StartEj+0x98>
+ 450:	ebfffffe 	bl	3f4 <_ZN10CSWDLoader8WriteMemEjj>
+ 454:	e3500000 	cmp	r0, #0
+ 458:	0a000005 	beq	474 <_ZN10CSWDLoader5StartEj+0x4c>
+ 45c:	e59f2060 	ldr	r2, [pc, #96]	; 4c4 <_ZN10CSWDLoader5StartEj+0x9c>
+ 460:	e59f1060 	ldr	r1, [pc, #96]	; 4c8 <_ZN10CSWDLoader5StartEj+0xa0>
+ 464:	e1a00004 	mov	r0, r4
+ 468:	ebfffffe 	bl	3f4 <_ZN10CSWDLoader8WriteMemEjj>
+ 46c:	e3500000 	cmp	r0, #0
+ 470:	1a000007 	bne	494 <_ZN10CSWDLoader5StartEj+0x6c>
+ 474:	e3a05000 	mov	r5, #0
+ 478:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 47c:	e59f3048 	ldr	r3, [pc, #72]	; 4cc <_ZN10CSWDLoader5StartEj+0xa4>
+ 480:	e3a02001 	mov	r2, #1
+ 484:	e59f1044 	ldr	r1, [pc, #68]	; 4d0 <_ZN10CSWDLoader5StartEj+0xa8>
+ 488:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 48c:	e1a00005 	mov	r0, r5
+ 490:	e8bd8070 	pop	{r4, r5, r6, pc}
+ 494:	e59f2038 	ldr	r2, [pc, #56]	; 4d4 <_ZN10CSWDLoader5StartEj+0xac>
+ 498:	e59f1038 	ldr	r1, [pc, #56]	; 4d8 <_ZN10CSWDLoader5StartEj+0xb0>
+ 49c:	e1a00004 	mov	r0, r4
+ 4a0:	ebfffffe 	bl	3f4 <_ZN10CSWDLoader8WriteMemEjj>
+ 4a4:	e2505000 	subs	r5, r0, #0
+ 4a8:	0afffff1 	beq	474 <_ZN10CSWDLoader5StartEj+0x4c>
+ 4ac:	e1a00004 	mov	r0, r4
+ 4b0:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 4b4:	ebfffffe 	bl	0 <LeaveCritical>
+ 4b8:	e1a00005 	mov	r0, r5
+ 4bc:	e8bd8070 	pop	{r4, r5, r6, pc}
+ 4c0:	e000edf8 	.word	0xe000edf8
+ 4c4:	0001000f 	.word	0x0001000f
+ 4c8:	e000edf4 	.word	0xe000edf4
+ 4cc:	00000050 	.word	0x00000050
+ 4d0:	00000000 	.word	0x00000000
+ 4d4:	a05f0001 	.word	0xa05f0001
+ 4d8:	e000edf0 	.word	0xe000edf0
+
+000004dc <_ZN10CSWDLoader4HaltEv>:
+ 4dc:	e92d4070 	push	{r4, r5, r6, lr}
+ 4e0:	e1a04000 	mov	r4, r0
+ 4e4:	e3a00001 	mov	r0, #1
+ 4e8:	ebfffffe 	bl	0 <EnterCritical>
+ 4ec:	e1a00004 	mov	r0, r4
+ 4f0:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 4f4:	e1a00004 	mov	r0, r4
+ 4f8:	e59f2058 	ldr	r2, [pc, #88]	; 558 <_ZN10CSWDLoader4HaltEv+0x7c>
+ 4fc:	e3a010a3 	mov	r1, #163	; 0xa3
+ 500:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 504:	e3500000 	cmp	r0, #0
+ 508:	0a000005 	beq	524 <_ZN10CSWDLoader4HaltEv+0x48>
+ 50c:	e59f2048 	ldr	r2, [pc, #72]	; 55c <_ZN10CSWDLoader4HaltEv+0x80>
+ 510:	e59f1048 	ldr	r1, [pc, #72]	; 560 <_ZN10CSWDLoader4HaltEv+0x84>
+ 514:	e1a00004 	mov	r0, r4
+ 518:	ebfffffe 	bl	3f4 <_ZN10CSWDLoader8WriteMemEjj>
+ 51c:	e2505000 	subs	r5, r0, #0
+ 520:	1a000007 	bne	544 <_ZN10CSWDLoader4HaltEv+0x68>
+ 524:	e3a05000 	mov	r5, #0
+ 528:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 52c:	e59f3030 	ldr	r3, [pc, #48]	; 564 <_ZN10CSWDLoader4HaltEv+0x88>
+ 530:	e3a02001 	mov	r2, #1
+ 534:	e59f102c 	ldr	r1, [pc, #44]	; 568 <_ZN10CSWDLoader4HaltEv+0x8c>
+ 538:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 53c:	e1a00005 	mov	r0, r5
+ 540:	e8bd8070 	pop	{r4, r5, r6, pc}
+ 544:	e1a00004 	mov	r0, r4
+ 548:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 54c:	ebfffffe 	bl	0 <LeaveCritical>
+ 550:	e1a00005 	mov	r0, r5
+ 554:	e8bd8070 	pop	{r4, r5, r6, pc}
+ 558:	a2000052 	.word	0xa2000052
+ 55c:	a05f0003 	.word	0xa05f0003
+ 560:	e000edf0 	.word	0xe000edf0
+ 564:	00000064 	.word	0x00000064
+ 568:	00000000 	.word	0x00000000
+
+0000056c <_ZN10CSWDLoader8ReadDataEhPj>:
+ 56c:	e92d43f0 	push	{r4, r5, r6, r7, r8, r9, lr}
+ 570:	e1a06001 	mov	r6, r1
+ 574:	e24dd00c 	sub	sp, sp, #12
+ 578:	e1a07002 	mov	r7, r2
+ 57c:	e3a02007 	mov	r2, #7
+ 580:	e1a04000 	mov	r4, r0
+ 584:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ 588:	e3160080 	tst	r6, #128	; 0x80
+ 58c:	0a00003c 	beq	684 <_ZN10CSWDLoader8ReadDataEhPj+0x118>
+ 590:	e3a01002 	mov	r1, #2
+ 594:	e1a00004 	mov	r0, r4
+ 598:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 59c:	e3a01003 	mov	r1, #3
+ 5a0:	e1a00004 	mov	r0, r4
+ 5a4:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 5a8:	e3500001 	cmp	r0, #1
+ 5ac:	e1a05000 	mov	r5, r0
+ 5b0:	1a000014 	bne	608 <_ZN10CSWDLoader8ReadDataEhPj+0x9c>
+ 5b4:	e3a01020 	mov	r1, #32
+ 5b8:	e1a00004 	mov	r0, r4
+ 5bc:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 5c0:	e1a01005 	mov	r1, r5
+ 5c4:	e1a08000 	mov	r8, r0
+ 5c8:	e1a00004 	mov	r0, r4
+ 5cc:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 5d0:	e1a09000 	mov	r9, r0
+ 5d4:	e1a00008 	mov	r0, r8
+ 5d8:	ebfffffe 	bl	0 <__paritysi2>
+ 5dc:	e1500009 	cmp	r0, r9
+ 5e0:	1a000018 	bne	648 <_ZN10CSWDLoader8ReadDataEhPj+0xdc>
+ 5e4:	e3570000 	cmp	r7, #0
+ 5e8:	0a000029 	beq	694 <_ZN10CSWDLoader8ReadDataEhPj+0x128>
+ 5ec:	e5878000 	str	r8, [r7]
+ 5f0:	e1a00004 	mov	r0, r4
+ 5f4:	e1a01005 	mov	r1, r5
+ 5f8:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 5fc:	e1a00005 	mov	r0, r5
+ 600:	e28dd00c 	add	sp, sp, #12
+ 604:	e8bd83f0 	pop	{r4, r5, r6, r7, r8, r9, pc}
+ 608:	e3a01001 	mov	r1, #1
+ 60c:	e1a00004 	mov	r0, r4
+ 610:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 614:	e1a00004 	mov	r0, r4
+ 618:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 61c:	ebfffffe 	bl	0 <LeaveCritical>
+ 620:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 624:	e58d5004 	str	r5, [sp, #4]
+ 628:	e58d6000 	str	r6, [sp]
+ 62c:	e59f3070 	ldr	r3, [pc, #112]	; 6a4 <_ZN10CSWDLoader8ReadDataEhPj+0x138>
+ 630:	e3a02002 	mov	r2, #2
+ 634:	e59f106c 	ldr	r1, [pc, #108]	; 6a8 <_ZN10CSWDLoader8ReadDataEhPj+0x13c>
+ 638:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 63c:	e3a00000 	mov	r0, #0
+ 640:	e28dd00c 	add	sp, sp, #12
+ 644:	e8bd83f0 	pop	{r4, r5, r6, r7, r8, r9, pc}
+ 648:	e1a01005 	mov	r1, r5
+ 64c:	e1a00004 	mov	r0, r4
+ 650:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ 654:	e1a00004 	mov	r0, r4
+ 658:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 65c:	ebfffffe 	bl	0 <LeaveCritical>
+ 660:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 664:	e58d6000 	str	r6, [sp]
+ 668:	e59f303c 	ldr	r3, [pc, #60]	; 6ac <_ZN10CSWDLoader8ReadDataEhPj+0x140>
+ 66c:	e3a02002 	mov	r2, #2
+ 670:	e59f1030 	ldr	r1, [pc, #48]	; 6a8 <_ZN10CSWDLoader8ReadDataEhPj+0x13c>
+ 674:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 678:	e3a00000 	mov	r0, #0
+ 67c:	e28dd00c 	add	sp, sp, #12
+ 680:	e8bd83f0 	pop	{r4, r5, r6, r7, r8, r9, pc}
+ 684:	e59f2024 	ldr	r2, [pc, #36]	; 6b0 <_ZN10CSWDLoader8ReadDataEhPj+0x144>
+ 688:	e59f1024 	ldr	r1, [pc, #36]	; 6b4 <_ZN10CSWDLoader8ReadDataEhPj+0x148>
+ 68c:	e59f0024 	ldr	r0, [pc, #36]	; 6b8 <_ZN10CSWDLoader8ReadDataEhPj+0x14c>
+ 690:	ebfffffe 	bl	0 <assertion_failed>
+ 694:	e59f2020 	ldr	r2, [pc, #32]	; 6bc <_ZN10CSWDLoader8ReadDataEhPj+0x150>
+ 698:	e59f1014 	ldr	r1, [pc, #20]	; 6b4 <_ZN10CSWDLoader8ReadDataEhPj+0x148>
+ 69c:	e59f001c 	ldr	r0, [pc, #28]	; 6c0 <_ZN10CSWDLoader8ReadDataEhPj+0x154>
+ 6a0:	ebfffffe 	bl	0 <assertion_failed>
+ 6a4:	00000078 	.word	0x00000078
+ 6a8:	00000000 	.word	0x00000000
+ 6ac:	0000009c 	.word	0x0000009c
+ 6b0:	0000018b 	.word	0x0000018b
+ 6b4:	00000000 	.word	0x00000000
+ 6b8:	00000010 	.word	0x00000010
+ 6bc:	000001a9 	.word	0x000001a9
+ 6c0:	000000b8 	.word	0x000000b8
+
+000006c4 <_ZN10CSWDLoader7PowerOnEv>:
+ 6c4:	e92d4010 	push	{r4, lr}
+ 6c8:	e3a0201e 	mov	r2, #30
+ 6cc:	e24dd008 	sub	sp, sp, #8
+ 6d0:	e3a01081 	mov	r1, #129	; 0x81
+ 6d4:	e1a04000 	mov	r4, r0
+ 6d8:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 6dc:	e3500000 	cmp	r0, #0
+ 6e0:	1a000002 	bne	6f0 <_ZN10CSWDLoader7PowerOnEv+0x2c>
+ 6e4:	e3a00000 	mov	r0, #0
+ 6e8:	e28dd008 	add	sp, sp, #8
+ 6ec:	e8bd8010 	pop	{r4, pc}
+ 6f0:	e3a02000 	mov	r2, #0
+ 6f4:	e3a010b1 	mov	r1, #177	; 0xb1
+ 6f8:	e1a00004 	mov	r0, r4
+ 6fc:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 700:	e3500000 	cmp	r0, #0
+ 704:	0afffff6 	beq	6e4 <_ZN10CSWDLoader7PowerOnEv+0x20>
+ 708:	e59f204c 	ldr	r2, [pc, #76]	; 75c <_ZN10CSWDLoader7PowerOnEv+0x98>
+ 70c:	e3a010a9 	mov	r1, #169	; 0xa9
+ 710:	e1a00004 	mov	r0, r4
+ 714:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 718:	e3500000 	cmp	r0, #0
+ 71c:	0afffff0 	beq	6e4 <_ZN10CSWDLoader7PowerOnEv+0x20>
+ 720:	e28d2004 	add	r2, sp, #4
+ 724:	e3a0108d 	mov	r1, #141	; 0x8d
+ 728:	e1a00004 	mov	r0, r4
+ 72c:	ebfffffe 	bl	56c <_ZN10CSWDLoader8ReadDataEhPj>
+ 730:	e3500000 	cmp	r0, #0
+ 734:	0affffeb 	beq	6e8 <_ZN10CSWDLoader7PowerOnEv+0x24>
+ 738:	e59d3004 	ldr	r3, [sp, #4]
+ 73c:	e3130202 	tst	r3, #536870912	; 0x20000000
+ 740:	0a000001 	beq	74c <_ZN10CSWDLoader7PowerOnEv+0x88>
+ 744:	e3530000 	cmp	r3, #0
+ 748:	baffffe6 	blt	6e8 <_ZN10CSWDLoader7PowerOnEv+0x24>
+ 74c:	e1a00004 	mov	r0, r4
+ 750:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 754:	ebfffffe 	bl	0 <LeaveCritical>
+ 758:	eaffffe1 	b	6e4 <_ZN10CSWDLoader7PowerOnEv+0x20>
+ 75c:	50000021 	.word	0x50000021
+
+00000760 <_ZN10CSWDLoader7ReadMemEjPj>:
+ 760:	e92d4070 	push	{r4, r5, r6, lr}
+ 764:	e1a05002 	mov	r5, r2
+ 768:	e1a02001 	mov	r2, r1
+ 76c:	e3a0108b 	mov	r1, #139	; 0x8b
+ 770:	e1a04000 	mov	r4, r0
+ 774:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 778:	e3500000 	cmp	r0, #0
+ 77c:	1a000001 	bne	788 <_ZN10CSWDLoader7ReadMemEjPj+0x28>
+ 780:	e3a00000 	mov	r0, #0
+ 784:	e8bd8070 	pop	{r4, r5, r6, pc}
+ 788:	e1a02005 	mov	r2, r5
+ 78c:	e3a0109f 	mov	r1, #159	; 0x9f
+ 790:	e1a00004 	mov	r0, r4
+ 794:	ebfffffe 	bl	56c <_ZN10CSWDLoader8ReadDataEhPj>
+ 798:	e3500000 	cmp	r0, #0
+ 79c:	0afffff7 	beq	780 <_ZN10CSWDLoader7ReadMemEjPj+0x20>
+ 7a0:	e1a02005 	mov	r2, r5
+ 7a4:	e1a00004 	mov	r0, r4
+ 7a8:	e8bd4070 	pop	{r4, r5, r6, lr}
+ 7ac:	e3a010bd 	mov	r1, #189	; 0xbd
+ 7b0:	eafffffe 	b	56c <_ZN10CSWDLoader8ReadDataEhPj>
+
+000007b4 <_ZN10CSWDLoader9LoadChunkEPKvjj>:
+ 7b4:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 7b8:	e2514000 	subs	r4, r1, #0
+ 7bc:	e24dd014 	sub	sp, sp, #20
+ 7c0:	0a00002d 	beq	87c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xc8>
+ 7c4:	e3120003 	tst	r2, #3
+ 7c8:	e1a05002 	mov	r5, r2
+ 7cc:	e594b000 	ldr	fp, [r4]
+ 7d0:	1a00002d 	bne	88c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xd8>
+ 7d4:	e3520000 	cmp	r2, #0
+ 7d8:	e1a06000 	mov	r6, r0
+ 7dc:	e1a0a003 	mov	sl, r3
+ 7e0:	0a000030 	beq	8a8 <_ZN10CSWDLoader9LoadChunkEPKvjj+0xf4>
+ 7e4:	e1a09003 	mov	r9, r3
+ 7e8:	e3a00001 	mov	r0, #1
+ 7ec:	ebfffffe 	bl	0 <EnterCritical>
+ 7f0:	e1a00006 	mov	r0, r6
+ 7f4:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 7f8:	e1a02009 	mov	r2, r9
+ 7fc:	e3a0108b 	mov	r1, #139	; 0x8b
+ 800:	e1a00006 	mov	r0, r6
+ 804:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 808:	e2507000 	subs	r7, r0, #0
+ 80c:	0a000040 	beq	914 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x160>
+ 810:	e2848b01 	add	r8, r4, #1024	; 0x400
+ 814:	ea000004 	b	82c <_ZN10CSWDLoader9LoadChunkEPKvjj+0x78>
+ 818:	e3550004 	cmp	r5, #4
+ 81c:	9a00001e 	bls	89c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xe8>
+ 820:	e1540008 	cmp	r4, r8
+ 824:	e2455004 	sub	r5, r5, #4
+ 828:	0a00000e 	beq	868 <_ZN10CSWDLoader9LoadChunkEPKvjj+0xb4>
+ 82c:	e4942004 	ldr	r2, [r4], #4
+ 830:	e3a010bb 	mov	r1, #187	; 0xbb
+ 834:	e1a00006 	mov	r0, r6
+ 838:	ebfffffe 	bl	318 <_ZN10CSWDLoader9WriteDataEhj>
+ 83c:	e2507000 	subs	r7, r0, #0
+ 840:	1afffff4 	bne	818 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x64>
+ 844:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 848:	e58d9000 	str	r9, [sp]
+ 84c:	e59f30f8 	ldr	r3, [pc, #248]	; 94c <_ZN10CSWDLoader9LoadChunkEPKvjj+0x198>
+ 850:	e3a02001 	mov	r2, #1
+ 854:	e59f10f4 	ldr	r1, [pc, #244]	; 950 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x19c>
+ 858:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 85c:	e1a00007 	mov	r0, r7
+ 860:	e28dd014 	add	sp, sp, #20
+ 864:	e8bd8ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, pc}
+ 868:	e1a00006 	mov	r0, r6
+ 86c:	e2899b01 	add	r9, r9, #1024	; 0x400
+ 870:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 874:	ebfffffe 	bl	0 <LeaveCritical>
+ 878:	eaffffda 	b	7e8 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x34>
+ 87c:	e3a020e4 	mov	r2, #228	; 0xe4
+ 880:	e59f10cc 	ldr	r1, [pc, #204]	; 954 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1a0>
+ 884:	e59f00cc 	ldr	r0, [pc, #204]	; 958 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1a4>
+ 888:	ebfffffe 	bl	0 <assertion_failed>
+ 88c:	e3a020e9 	mov	r2, #233	; 0xe9
+ 890:	e59f10bc 	ldr	r1, [pc, #188]	; 954 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1a0>
+ 894:	e59f00c0 	ldr	r0, [pc, #192]	; 95c <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1a8>
+ 898:	ebfffffe 	bl	0 <assertion_failed>
+ 89c:	e1a00006 	mov	r0, r6
+ 8a0:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 8a4:	ebfffffe 	bl	0 <LeaveCritical>
+ 8a8:	e3a00001 	mov	r0, #1
+ 8ac:	ebfffffe 	bl	0 <EnterCritical>
+ 8b0:	e1a00006 	mov	r0, r6
+ 8b4:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 8b8:	e28d200c 	add	r2, sp, #12
+ 8bc:	e1a0100a 	mov	r1, sl
+ 8c0:	e1a00006 	mov	r0, r6
+ 8c4:	ebfffffe 	bl	760 <_ZN10CSWDLoader7ReadMemEjPj>
+ 8c8:	e3500000 	cmp	r0, #0
+ 8cc:	0a000017 	beq	930 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x17c>
+ 8d0:	e1a00006 	mov	r0, r6
+ 8d4:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ 8d8:	ebfffffe 	bl	0 <LeaveCritical>
+ 8dc:	e59d300c 	ldr	r3, [sp, #12]
+ 8e0:	e153000b 	cmp	r3, fp
+ 8e4:	03a07001 	moveq	r7, #1
+ 8e8:	0affffdb 	beq	85c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xa8>
+ 8ec:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 8f0:	e59d300c 	ldr	r3, [sp, #12]
+ 8f4:	e58db000 	str	fp, [sp]
+ 8f8:	e58d3004 	str	r3, [sp, #4]
+ 8fc:	e3a02001 	mov	r2, #1
+ 900:	e59f3058 	ldr	r3, [pc, #88]	; 960 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1ac>
+ 904:	e59f1044 	ldr	r1, [pc, #68]	; 950 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x19c>
+ 908:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 90c:	e3a07000 	mov	r7, #0
+ 910:	eaffffd1 	b	85c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xa8>
+ 914:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 918:	e58d9000 	str	r9, [sp]
+ 91c:	e59f3040 	ldr	r3, [pc, #64]	; 964 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1b0>
+ 920:	e3a02001 	mov	r2, #1
+ 924:	e59f1024 	ldr	r1, [pc, #36]	; 950 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x19c>
+ 928:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 92c:	eaffffca 	b	85c <_ZN10CSWDLoader9LoadChunkEPKvjj+0xa8>
+ 930:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 934:	e58da000 	str	sl, [sp]
+ 938:	e59f3028 	ldr	r3, [pc, #40]	; 968 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x1b4>
+ 93c:	e3a02001 	mov	r2, #1
+ 940:	e59f1008 	ldr	r1, [pc, #8]	; 950 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x19c>
+ 944:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ 948:	eaffffe0 	b	8d0 <_ZN10CSWDLoader9LoadChunkEPKvjj+0x11c>
+ 94c:	00000104 	.word	0x00000104
+	...
+ 958:	000000c4 	.word	0x000000c4
+ 95c:	000000d4 	.word	0x000000d4
+ 960:	0000013c 	.word	0x0000013c
+ 964:	000000ec 	.word	0x000000ec
+ 968:	00000120 	.word	0x00000120
+
+0000096c <_ZN10CSWDLoader4LoadEPKvjj>:
+ 96c:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+ 970:	ed2d8b02 	vpush	{d8}
+ 974:	e24dd018 	sub	sp, sp, #24
+ 978:	e1a08001 	mov	r8, r1
+ 97c:	e1a04002 	mov	r4, r2
+ 980:	e1a06003 	mov	r6, r3
+ 984:	e1a05000 	mov	r5, r0
+ 988:	ebfffffe 	bl	4dc <_ZN10CSWDLoader4HaltEv>
+ 98c:	e3500000 	cmp	r0, #0
+ 990:	1a000003 	bne	9a4 <_ZN10CSWDLoader4LoadEPKvjj+0x38>
+ 994:	e3a00000 	mov	r0, #0
+ 998:	e28dd018 	add	sp, sp, #24
+ 99c:	ecbd8b02 	vpop	{d8}
+ 9a0:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+ 9a4:	ebfffffe 	bl	0 <_ZN6CTimer13GetClockTicksEv>
+ 9a8:	e1a03006 	mov	r3, r6
+ 9ac:	e1a07000 	mov	r7, r0
+ 9b0:	e1a02004 	mov	r2, r4
+ 9b4:	e1a01008 	mov	r1, r8
+ 9b8:	e1a00005 	mov	r0, r5
+ 9bc:	ebfffffe 	bl	7b4 <_ZN10CSWDLoader9LoadChunkEPKvjj>
+ 9c0:	e3500000 	cmp	r0, #0
+ 9c4:	0afffff2 	beq	994 <_ZN10CSWDLoader4LoadEPKvjj+0x28>
+ 9c8:	ebfffffe 	bl	0 <_ZN6CTimer13GetClockTicksEv>
+ 9cc:	e0400007 	sub	r0, r0, r7
+ 9d0:	ee070a90 	vmov	s15, r0
+ 9d4:	ed9f6b15 	vldr	d6, [pc, #84]	; a30 <_ZN10CSWDLoader4LoadEPKvjj+0xc4>
+ 9d8:	eeb87b67 	vcvt.f64.u32	d7, s15
+ 9dc:	ee878b06 	vdiv.f64	d8, d7, d6
+ 9e0:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ 9e4:	ee074a90 	vmov	s15, r4
+ 9e8:	eeb85b67 	vcvt.f64.u32	d5, s15
+ 9ec:	ed9f6b11 	vldr	d6, [pc, #68]	; a38 <_ZN10CSWDLoader4LoadEPKvjj+0xcc>
+ 9f0:	ee857b08 	vdiv.f64	d7, d5, d8
+ 9f4:	ee277b06 	vmul.f64	d7, d7, d6
+ 9f8:	ed8d8b02 	vstr	d8, [sp, #8]
+ 9fc:	e58d4000 	str	r4, [sp]
+ a00:	ed8d7b04 	vstr	d7, [sp, #16]
+ a04:	e59f3034 	ldr	r3, [pc, #52]	; a40 <_ZN10CSWDLoader4LoadEPKvjj+0xd4>
+ a08:	e3a02003 	mov	r2, #3
+ a0c:	e59f1030 	ldr	r1, [pc, #48]	; a44 <_ZN10CSWDLoader4LoadEPKvjj+0xd8>
+ a10:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ a14:	e1a01006 	mov	r1, r6
+ a18:	e1a00005 	mov	r0, r5
+ a1c:	e28dd018 	add	sp, sp, #24
+ a20:	ecbd8b02 	vpop	{d8}
+ a24:	e8bd41f0 	pop	{r4, r5, r6, r7, r8, lr}
+ a28:	eafffffe 	b	428 <_ZN10CSWDLoader5StartEj>
+ a2c:	e320f000 	nop	{0}
+ a30:	00000000 	.word	0x00000000
+ a34:	412e8480 	.word	0x412e8480
+ a38:	00000000 	.word	0x00000000
+ a3c:	3f500000 	.word	0x3f500000
+ a40:	0000015c 	.word	0x0000015c
+ a44:	00000000 	.word	0x00000000
+
+00000a48 <_ZN10CSWDLoader12SelectTargetEjh>:
+ a48:	e92d4070 	push	{r4, r5, r6, lr}
+ a4c:	e1a04000 	mov	r4, r0
+ a50:	e1815e02 	orr	r5, r1, r2, lsl #28
+ a54:	e3a02007 	mov	r2, #7
+ a58:	e3a01099 	mov	r1, #153	; 0x99
+ a5c:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ a60:	e1a00004 	mov	r0, r4
+ a64:	e3a01006 	mov	r1, #6
+ a68:	ebfffffe 	bl	2b4 <_ZN10CSWDLoader8ReadBitsEj>
+ a6c:	e1a01005 	mov	r1, r5
+ a70:	e1a00004 	mov	r0, r4
+ a74:	e3a02020 	mov	r2, #32
+ a78:	ebfffffe 	bl	138 <_ZN10CSWDLoader9WriteBitsEjj>
+ a7c:	e1a00005 	mov	r0, r5
+ a80:	ebfffffe 	bl	0 <__paritysi2>
+ a84:	e3a02001 	mov	r2, #1
+ a88:	e1a01000 	mov	r1, r0
+ a8c:	e1a00004 	mov	r0, r4
+ a90:	e8bd4070 	pop	{r4, r5, r6, lr}
+ a94:	eafffffe 	b	138 <_ZN10CSWDLoader9WriteBitsEjj>
+
+00000a98 <_ZN10CSWDLoader10InitializeEv>:
+ a98:	e92d4030 	push	{r4, r5, lr}
+ a9c:	e5903000 	ldr	r3, [r0]
+ aa0:	e24dd014 	sub	sp, sp, #20
+ aa4:	e3530000 	cmp	r3, #0
+ aa8:	e1a04000 	mov	r4, r0
+ aac:	1a00002e 	bne	b6c <_ZN10CSWDLoader10InitializeEv+0xd4>
+ ab0:	e3a00001 	mov	r0, #1
+ ab4:	ebfffffe 	bl	0 <EnterCritical>
+ ab8:	e1a00004 	mov	r0, r4
+ abc:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ ac0:	e1a00004 	mov	r0, r4
+ ac4:	ebfffffe 	bl	190 <_ZN10CSWDLoader11Dormant2SWDEv>
+ ac8:	e1a00004 	mov	r0, r4
+ acc:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ ad0:	e1a00004 	mov	r0, r4
+ ad4:	ebfffffe 	bl	218 <_ZN10CSWDLoader9LineResetEv>
+ ad8:	e3a02000 	mov	r2, #0
+ adc:	e59f1100 	ldr	r1, [pc, #256]	; be4 <_ZN10CSWDLoader10InitializeEv+0x14c>
+ ae0:	e1a00004 	mov	r0, r4
+ ae4:	ebfffffe 	bl	a48 <_ZN10CSWDLoader12SelectTargetEjh>
+ ae8:	e28d200c 	add	r2, sp, #12
+ aec:	e3a010a5 	mov	r1, #165	; 0xa5
+ af0:	e1a00004 	mov	r0, r4
+ af4:	ebfffffe 	bl	56c <_ZN10CSWDLoader8ReadDataEhPj>
+ af8:	e2505000 	subs	r5, r0, #0
+ afc:	0a000028 	beq	ba4 <_ZN10CSWDLoader10InitializeEv+0x10c>
+ b00:	e59f30e0 	ldr	r3, [pc, #224]	; be8 <_ZN10CSWDLoader10InitializeEv+0x150>
+ b04:	e59d200c 	ldr	r2, [sp, #12]
+ b08:	e1a00004 	mov	r0, r4
+ b0c:	e1520003 	cmp	r2, r3
+ b10:	1a000008 	bne	b38 <_ZN10CSWDLoader10InitializeEv+0xa0>
+ b14:	ebfffffe 	bl	6c4 <_ZN10CSWDLoader7PowerOnEv>
+ b18:	e2505000 	subs	r5, r0, #0
+ b1c:	0a000028 	beq	bc4 <_ZN10CSWDLoader10InitializeEv+0x12c>
+ b20:	e1a00004 	mov	r0, r4
+ b24:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ b28:	ebfffffe 	bl	0 <LeaveCritical>
+ b2c:	e1a00005 	mov	r0, r5
+ b30:	e28dd014 	add	sp, sp, #20
+ b34:	e8bd8030 	pop	{r4, r5, pc}
+ b38:	e3a05000 	mov	r5, #0
+ b3c:	ebfffffe 	bl	244 <_ZN10CSWDLoader9WriteIdleEv>
+ b40:	ebfffffe 	bl	0 <LeaveCritical>
+ b44:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ b48:	e59d200c 	ldr	r2, [sp, #12]
+ b4c:	e59f3098 	ldr	r3, [pc, #152]	; bec <_ZN10CSWDLoader10InitializeEv+0x154>
+ b50:	e58d2000 	str	r2, [sp]
+ b54:	e59f1094 	ldr	r1, [pc, #148]	; bf0 <_ZN10CSWDLoader10InitializeEv+0x158>
+ b58:	e3a02001 	mov	r2, #1
+ b5c:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ b60:	e1a00005 	mov	r0, r5
+ b64:	e28dd014 	add	sp, sp, #20
+ b68:	e8bd8030 	pop	{r4, r5, pc}
+ b6c:	e2845008 	add	r5, r4, #8
+ b70:	e3a0000a 	mov	r0, #10
+ b74:	ebfffffe 	bl	0 <_ZN6CTimer13SimpleMsDelayEj>
+ b78:	e1a00005 	mov	r0, r5
+ b7c:	e3a01000 	mov	r1, #0
+ b80:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+ b84:	e3a0000a 	mov	r0, #10
+ b88:	ebfffffe 	bl	0 <_ZN6CTimer13SimpleMsDelayEj>
+ b8c:	e1a00005 	mov	r0, r5
+ b90:	e3a01001 	mov	r1, #1
+ b94:	ebfffffe 	bl	0 <_ZN8CGPIOPin5WriteEj>
+ b98:	e3a0000a 	mov	r0, #10
+ b9c:	ebfffffe 	bl	0 <_ZN6CTimer13SimpleMsDelayEj>
+ ba0:	eaffffc2 	b	ab0 <_ZN10CSWDLoader10InitializeEv+0x18>
+ ba4:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ ba8:	e59f3044 	ldr	r3, [pc, #68]	; bf4 <_ZN10CSWDLoader10InitializeEv+0x15c>
+ bac:	e3a02001 	mov	r2, #1
+ bb0:	e59f1038 	ldr	r1, [pc, #56]	; bf0 <_ZN10CSWDLoader10InitializeEv+0x158>
+ bb4:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ bb8:	e1a00005 	mov	r0, r5
+ bbc:	e28dd014 	add	sp, sp, #20
+ bc0:	e8bd8030 	pop	{r4, r5, pc}
+ bc4:	ebfffffe 	bl	0 <_ZN7CLogger3GetEv>
+ bc8:	e59f3028 	ldr	r3, [pc, #40]	; bf8 <_ZN10CSWDLoader10InitializeEv+0x160>
+ bcc:	e3a02001 	mov	r2, #1
+ bd0:	e59f1018 	ldr	r1, [pc, #24]	; bf0 <_ZN10CSWDLoader10InitializeEv+0x158>
+ bd4:	ebfffffe 	bl	0 <_ZN7CLogger5WriteEPKc12TLogSeverityS1_z>
+ bd8:	e1a00005 	mov	r0, r5
+ bdc:	e28dd014 	add	sp, sp, #20
+ be0:	e8bd8030 	pop	{r4, r5, pc}
+ be4:	01002927 	.word	0x01002927
+ be8:	0bc12477 	.word	0x0bc12477
+ bec:	000001a4 	.word	0x000001a4
+ bf0:	00000000 	.word	0x00000000
+ bf4:	0000018c 	.word	0x0000018c
+ bf8:	000001d0 	.word	0x000001d0
+
+00000bfc <_ZN10CSWDLoaderD1Ev>:
+ bfc:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+ c00:	e1a04000 	mov	r4, r0
+ c04:	e1a05000 	mov	r5, r0
+ c08:	e2807058 	add	r7, r0, #88	; 0x58
+ c0c:	e1a00007 	mov	r0, r7
+ c10:	e3a02001 	mov	r2, #1
+ c14:	e3a01000 	mov	r1, #0
+ c18:	e2846030 	add	r6, r4, #48	; 0x30
+ c1c:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ c20:	e1a00006 	mov	r0, r6
+ c24:	e3a02001 	mov	r2, #1
+ c28:	e3a01000 	mov	r1, #0
+ c2c:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ c30:	e4953008 	ldr	r3, [r5], #8
+ c34:	e3530000 	cmp	r3, #0
+ c38:	1a000007 	bne	c5c <_ZN10CSWDLoaderD1Ev+0x60>
+ c3c:	e1a00007 	mov	r0, r7
+ c40:	ebfffffe 	bl	0 <_ZN8CGPIOPinD1Ev>
+ c44:	e1a00006 	mov	r0, r6
+ c48:	ebfffffe 	bl	0 <_ZN8CGPIOPinD1Ev>
+ c4c:	e1a00005 	mov	r0, r5
+ c50:	ebfffffe 	bl	0 <_ZN8CGPIOPinD1Ev>
+ c54:	e1a00004 	mov	r0, r4
+ c58:	e8bd81f0 	pop	{r4, r5, r6, r7, r8, pc}
+ c5c:	e3a02001 	mov	r2, #1
+ c60:	e3a01000 	mov	r1, #0
+ c64:	e1a00005 	mov	r0, r5
+ c68:	ebfffffe 	bl	0 <_ZN8CGPIOPin7SetModeE9TGPIOModeb>
+ c6c:	eafffff2 	b	c3c <_ZN10CSWDLoaderD1Ev+0x40>
