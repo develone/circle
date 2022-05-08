@@ -1,0 +1,508 @@
+  TOOL  converttool
+  CPP   actled.o
+  CPP   alloc.o
+  CPP   assert.o
+  CPP   bcmframebuffer.o
+  CPP   bcmmailbox.o
+  CPP   bcmpropertytags.o
+  CPP   bcmwatchdog.o
+  CPP   chargenerator.o
+  CPP   classallocator.o
+  CPP   cputhrottle.o
+  CPP   debug.o
+  AS    delayloop.o
+  CPP   device.o
+  CPP   devicenameservice.o
+  CPP   dmachannel.o
+  CPP   dmasoundbuffers.o
+  CPP   gpioclock.o
+  CPP   gpiomanager.o
+  CPP   gpiopin.o
+  CPP   gpiopinfiq.o
+  CPP   i2cmaster.o
+  CPP   i2cslave.o
+  CPP   hdmisoundbasedevice.o
+  CPP   i2ssoundbasedevice.o
+  CPP   koptions.o
+  CPP   logger.o
+  CPP   machineinfo.o
+  CPP   multicore.o
+  CPP   nulldevice.o
+  CPP   ptrarray.o
+  CPP   ptrlist.o
+  CPP   pwmoutput.o
+  CPP   pwmsoundbasedevice.o
+  CPP   pwmsounddevice.o
+  CPP   qemu.o
+  CPP   screen.o
+  CPP   serial.o
+  CPP   soundbasedevice.o
+  CPP   spimaster.o
+  CPP   spimasteraux.o
+  CPP   spimasterdma.o
+  CPP   spinlock.o
+  CPP   string.o
+  CPP   sysinit.o
+  CPP   time.o
+  CPP   timer.o
+  CPP   tracer.o
+  CPP   usertimer.o
+  CPP   util.o
+  AS    util_fast.o
+  CPP   virtualgpiopin.o
+  CPP   chainboot.o
+  CPP   macaddress.o
+  CPP   netdevice.o
+  CPP   new.o
+  CPP   heapallocator.o
+  CPP   pageallocator.o
+  AS    setjmp.o
+  CPP   numberpool.o
+  CPP   latencytester.o
+  CPP   writebuffer.o
+  CPP   2dgraphics.o
+  CPP   smimaster.o
+  AS    cache-v7.o
+  CPP   exceptionhandler.o
+  AS    exceptionstub.o
+  CPP   memory.o
+  CPP   pagetable.o
+  AS    startup.o
+  CPP   synchronize.o
+  CPP   bcmrandom.o
+  CPP   interrupt.o
+  CPP   purecall.o
+  CPP   cxa_guard.o
+  AR    libcircle.a
+  CPP   lan7800.o
+  CPP   smsc951x.o
+  CPP   usbbluetooth.o
+  CPP   usbcdcethernet.o
+  CPP   usbconfigparser.o
+  CPP   usbdevice.o
+  CPP   usbdevicefactory.o
+  CPP   usbendpoint.o
+  CPP   usbfunction.o
+  CPP   usbgamepad.o
+  CPP   usbgamepadps3.o
+  CPP   usbgamepadps4.o
+  CPP   usbgamepadstandard.o
+  CPP   usbgamepadswitchpro.o
+  CPP   usbgamepadxbox360.o
+  CPP   usbgamepadxboxone.o
+  CPP   usbhiddevice.o
+  CPP   usbhostcontroller.o
+  CPP   usbkeyboard.o
+  CPP   usbmassdevice.o
+  CPP   usbmidi.o
+  CPP   usbmouse.o
+  CPP   usbprinter.o
+  CPP   usbrequest.o
+  CPP   usbstandardhub.o
+  CPP   usbstring.o
+  CPP   usbserial.o
+  CPP   usbserialch341.o
+  CPP   usbserialcp2102.o
+  CPP   usbserialpl2303.o
+  CPP   usbserialft231x.o
+  CPP   usbserialcdc.o
+  CPP   usbtouchscreen.o
+  CPP   dwhcidevice.o
+  CPP   dwhciframeschednper.o
+  CPP   dwhciframeschednsplit.o
+  CPP   dwhciframeschedper.o
+  CPP   dwhciregister.o
+  CPP   dwhcirootport.o
+  CPP   dwhcixactqueue.o
+  CPP   dwhcixferstagedata.o
+  AR    libusb.a
+  CPP   keyboardbehaviour.o
+  CPP   keymap.o
+  CPP   mousebehaviour.o
+  CPP   mouse.o
+  CPP   touchscreen.o
+  CPP   rpitouchscreen.o
+  CPP   console.o
+  CPP   keyboardbuffer.o
+  CPP   linediscipline.o
+  AR    libinput.a
+  CPP   partition.o
+  CPP   partitionmanager.o
+  AR    libfs.a
+  CPP   fatfs.o
+  CPP   fatcache.o
+  CPP   fatinfo.o
+  CPP   fat.o
+  CPP   fatdir.o
+  AR    libfatfs.a
+  CPP   task.o
+  CPP   scheduler.o
+  AS    taskswitch.o
+  CPP   synchronizationevent.o
+  CPP   mutex.o
+  CPP   semaphore.o
+  AR    libsched.a
+  CPP   netsubsystem.o
+  CPP   nettask.o
+  CPP   netsocket.o
+  CPP   socket.o
+  CPP   transportlayer.o
+  CPP   networklayer.o
+  CPP   linklayer.o
+  CPP   netdevlayer.o
+  CPP   phytask.o
+  CPP   arphandler.o
+  CPP   icmphandler.o
+  CPP   routecache.o
+  CPP   netconnection.o
+  CPP   udpconnection.o
+  CPP   tcpconnection.o
+  CPP   retransmissionqueue.o
+  CPP   retranstimeoutcalc.o
+  CPP   tcprejector.o
+  CPP   netconfig.o
+  CPP   ipaddress.o
+  CPP   netqueue.o
+  CPP   checksumcalculator.o
+  CPP   dnsclient.o
+  CPP   ntpclient.o
+  CPP   mqttclient.o
+  CPP   mqttsendpacket.o
+  CPP   mqttreceivepacket.o
+  CPP   dhcpclient.o
+  CPP   ntpdaemon.o
+  CPP   httpdaemon.o
+  CPP   httpclient.o
+  CPP   tftpdaemon.o
+  CPP   syslogdaemon.o
+  AR    libnet.a
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 82328
+01-gpiosimple:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 35424
+02-screenpixel:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 54264
+03-screentext:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 59044
+04-timer:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 58988
+05-usbsimple:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 174508
+06-ethernet:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 174620
+07-usbstorage:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 174772
+08-usbkeyboard:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 175084
+09-softserial:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   softserial.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 60796
+10-usbmouse:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 175604
+11-gpioclock:
+  CPP   main.o
+  CPP   kernel.o
+  AS    sampler.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 60684
+12-pwmsound:
+  UNZIP sound.h
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 283836
+13-pwmoutput:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 60516
+14-usbprinter:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 174528
+15-files:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 188192
+16-i2cping:
+cd master && make
+make[1]: Entering directory '/home/devel/circle/sample/16-i2cping/master'
+  CPP   main.o
+  CPP   kernel.o
+  CPP   i2cechoclient.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 61736
+make[1]: Leaving directory '/home/devel/circle/sample/16-i2cping/master'
+cd slave && make
+make[1]: Entering directory '/home/devel/circle/sample/16-i2cping/slave'
+  CPP   main.o
+  CPP   kernel.o
+  CPP   i2cechoserver.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 60248
+make[1]: Leaving directory '/home/devel/circle/sample/16-i2cping/slave'
+17-fractal:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   mandelbrot.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 59212
+18-ntptime:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 228768
+19-tasks:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   screentask.o
+  CPP   primetask.o
+  CPP   ledtask.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 65164
+20-tcpsimple:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   echoserver.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 228756
+21-webserver:
+  GEN   index.h
+  GEN   style.h
+  GEN   ledoff.h
+  GEN   ledon.h
+  GEN   favicon.h
+  CPP   main.o
+  CPP   kernel.o
+  CPP   webserver.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 237832
+23-spisimple:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 61304
+24-hwrandom:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 54364
+25-spidma:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 61240
+26-cpustress:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   mandelbrot.o
+  CPP   temptask.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 67780
+27-usbgamepad:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 175396
+28-touchscreen:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 176140
+29-miniorgan:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   miniorgan.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 189276
+30-gpiofiq:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 61696
+31-webclient:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   htmlscanner.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 233192
+32-i2cshell:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   i2cshell.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 185692
+33-syslog:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 232668
+34-sounddevices:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   oscillator.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 91248
+35-mqttclient:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   mqttsampleclient.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 239768
+36-softpwm:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   softpwmoutput.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 60336
+37-showgamepad:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 177720
+38-bootloader:
+  GEN   index.h
+  GEN   style.h
+  GEN   favicon.h
+  CPP   main.o
+  CPP   kernel.o
+  CPP   httpbootserver.o
+  CPP   tftpbootserver.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 240064
+39-umsdplugging:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 188000
+40-irqlatency:
+  CPP   main.o
+  CPP   kernel.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 171836
+41-screenanimations:
+  CPP   main.o
+  CPP   kernel.o
+  CPP   graphicshape.o
+  LD    kernel7.elf
+  DUMP  kernel7.lst
+  COPY  kernel7.img
+  WC    kernel7.img => 42456
+42-i2sinput:
+make: 'kernel7.img' is up to date.
