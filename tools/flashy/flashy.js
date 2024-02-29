@@ -2,6 +2,8 @@ let fs = require('fs');
 let os = require('os');
 let util = require('util');
 let stdout = process.stdout;
+let child_process = require('child_process');
+
 
 // Command line options
 let hexFile = null;
@@ -20,6 +22,8 @@ let rebootMagic = null;
 let rebootDelay = null;
 let monitor = false;
 let noFast = false;
+let usingHC06 = false;
+let noRespawn = false;
 let goDelay = 0;
 
 // The currently open serial port
@@ -66,6 +70,33 @@ async function openSerialPortAsync(baudRate)
     // Remap WSL serial port names to Windows equivalent if appropriate
     if (os.platform() == 'win32' && serialPortName.startsWith(`/dev/ttyS`))
     {
+        // This is a hacky fix for when launched from within a WSL session (possibly
+        // related to Windows 11) where the SerialPort module fails with overlapped
+        // I/O errors.  No sure why this happens but only seems to occur in the process
+        // launched immediately from WSL.
+        // As a work around, we simply respawn ourself with the same arguments + an
+        // additional "--no-respawn" flag so we know not to do this again.
+        if (!noRespawn)
+        {
+            // Use same args, but add the --no-respawn flag
+            let args = process.argv.slice(1);
+            args.push("--no-respawn");
+
+            // Respawn
+            let r = child_process.spawnSync(
+                process.argv[0], 
+                args,
+                { 
+                    stdio: 'inherit', 
+                    shell: false
+                }
+            );
+            
+            // Quit with exit code of child process
+            process.exit(r.status);
+        }
+        
+
         let remapped = `COM` + serialPortName.substr(9);
         stdout.write(`Using '${remapped}' instead of WSL port '${serialPortName}'.\n`)
         serialPortName = remapped;
@@ -208,7 +239,9 @@ function binary_encoder()
             if (inbyte == 0x3a)     // ":"
             {
                 // Flush buffer?
-                if (buffer_used > buffer.length - 1024)
+                // When using an HC-06 module as a serial device,
+                // flush on every record to fix transfer failure.
+                if (buffer_used > buffer.length - 1024 || usingHC06)
                     await flush();
 
                 // start of new record
@@ -364,6 +397,12 @@ async function flashDevice()
     {
         // Send reset command
         await writeSerialPortAsync(resetBuf);
+    }
+
+    // Make sure fast mode is enabled when using an HC-06
+    if(!fastMode && usingHC06)
+    {
+        fail(`Bootloader doesn't support fast mode while HC-06 depends on it`);
     }
 
     // Create fast write binary encoder
@@ -530,6 +569,7 @@ function showHelp()
     console.log(`--reboot:<magic>   Sends a magic reboot string at user baud before flashing`);
     console.log(`--rebootdelay:<ms> Delay after sending reboot magic`);
     console.log(`--monitor          Monitor serial port`);
+    console.log(`--hc06             Hints that a HC-06 is used as a serial device (cannot be used with --nofast)`)
     console.log(`--help             Show this help`);
 }
 
@@ -602,6 +642,14 @@ function parseCommandLine()
                     noFast = true;
                     break;
 
+                case `hc06`:
+                    usingHC06 = true;
+                    break;
+
+                case "no-respawn":
+                    noRespawn = true;
+                    break;
+
                 default:
                     fail(`Unknown switch --${sw}`);
             }
@@ -635,6 +683,12 @@ function parseCommandLine()
     // Can't do anything without a serial port
     if (!serialPortName)
         fail(`No serial port specified`);
+
+    // HC-06 module must use fast mode (binary encoder) in order to work
+    if(usingHC06 && noFast)
+    {
+        fail(`Cannot use --hc06 and --nofast`);
+    }
 }
 
 
@@ -665,4 +719,5 @@ function parseCommandLine()
     // Finished
     await closeSerialPortAsync();
     stdout.write(`Done!\n`);
+    process.exit(0);
 })();

@@ -4,7 +4,7 @@
 // C++ wrapper for LVGL with mouse and touch screen support
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2019-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2019-2023  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,6 +58,12 @@ private:
 
 	static void MouseRemovedHandler (CDevice *pDevice, void *pContext);
 
+	static void PeriodicTickHandler (void);
+
+#if RASPPI >= 5
+	void SetupCursor (lv_indev_t *pIndev);
+#endif
+
 private:
 	lv_color_t *m_pBuffer1;
 	lv_color_t *m_pBuffer2;
@@ -71,6 +77,11 @@ private:
 	CTouchScreenDevice *m_pTouchScreen;
 	unsigned m_nLastTouchUpdate;
 	lv_indev_data_t m_PointerData;
+
+#if RASPPI >= 5
+	lv_indev_t *m_pIndev;
+	lv_img_dsc_t *m_pCursorDesc;
+#endif
 
 	static CLVGL *s_pThis;
 };

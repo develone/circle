@@ -2,7 +2,7 @@
 // lvgl.cpp
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2019-2022  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2019-2023  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,6 +38,10 @@ CLVGL::CLVGL (CScreenDevice *pScreen, CInterruptSystem *pInterrupt)
 	m_pMouseDevice (0),
 	m_pTouchScreen (0),
 	m_nLastTouchUpdate (0)
+#if RASPPI >= 5
+	, m_pIndev (0),
+	m_pCursorDesc (0)
+#endif
 {
 	assert (s_pThis == 0);
 	s_pThis = this;
@@ -57,6 +61,10 @@ CLVGL::CLVGL (CBcmFrameBuffer *pFrameBuffer, CInterruptSystem *pInterrupt)
 	m_pMouseDevice (0),
 	m_pTouchScreen (0),
 	m_nLastTouchUpdate (0)
+#if RASPPI >= 5
+	, m_pIndev (0),
+	m_pCursorDesc (0)
+#endif
 {
 	assert (s_pThis == 0);
 	s_pThis = this;
@@ -69,6 +77,10 @@ CLVGL::CLVGL (CBcmFrameBuffer *pFrameBuffer, CInterruptSystem *pInterrupt)
 CLVGL::~CLVGL (void)
 {
 	s_pThis = 0;
+
+#if RASPPI >= 5
+	delete m_pCursorDesc;
+#endif
 
 	m_pTouchScreen = 0;
 	m_pMouseDevice = 0;
@@ -98,8 +110,10 @@ boolean CLVGL::Initialize (void)
 
 	lv_log_register_print_cb (LogPrint);
 
-	m_pBuffer1 = new (HEAP_DMA30) lv_color_t[nWidth*10];
-	m_pBuffer2 = new (HEAP_DMA30) lv_color_t[nWidth*10];
+	unsigned nBufSizePixels = nWidth * nHeight/10;
+
+	m_pBuffer1 = new (HEAP_DMA30) lv_color_t[nBufSizePixels];
+	m_pBuffer2 = new (HEAP_DMA30) lv_color_t[nBufSizePixels];
 	if (   m_pBuffer1 == 0
 	    || m_pBuffer2 == 0)
 	{
@@ -107,7 +121,7 @@ boolean CLVGL::Initialize (void)
 	}
 
 	static lv_disp_draw_buf_t disp_buf;
-	lv_disp_draw_buf_init (&disp_buf, m_pBuffer1, m_pBuffer2, nWidth*10);
+	lv_disp_draw_buf_init (&disp_buf, m_pBuffer1, m_pBuffer2, nBufSizePixels);
 
 	static lv_disp_drv_t disp_drv;
 	lv_disp_drv_init (&disp_drv);
@@ -153,7 +167,21 @@ boolean CLVGL::Initialize (void)
 	lv_indev_drv_init (&indev_drv);
 	indev_drv.type = LV_INDEV_TYPE_POINTER;
 	indev_drv.read_cb = PointerRead;
-	lv_indev_drv_register (&indev_drv);
+#if RASPPI >= 5
+	assert (m_pIndev == 0);
+	m_pIndev =
+#endif
+		lv_indev_drv_register (&indev_drv);
+
+#if RASPPI >= 5
+	if (m_pMouseDevice != 0)
+	{
+		assert (m_pIndev != 0);
+		SetupCursor (m_pIndev);
+	}
+#endif
+
+	CTimer::Get ()->RegisterPeriodicHandler (PeriodicTickHandler);
 
 	return TRUE;
 }
@@ -176,16 +204,19 @@ void CLVGL::Update (boolean bPlugAndPlayUpdated)
 				m_pMouseDevice->RegisterEventHandler (MouseEventHandler);
 
 				m_pMouseDevice->RegisterRemovedHandler (MouseRemovedHandler);
+
+#if RASPPI >= 5
+				assert (m_pIndev != 0);
+				SetupCursor (m_pIndev);
+#endif
 			}
 		}
 	}
 
-	lv_task_handler ();
-
 	unsigned nTicks = CTimer::Get ()->GetClockTicks ();
-	if (nTicks - m_nLastUpdate >= CLOCKHZ/1000)
+	if (nTicks - m_nLastUpdate >= 5*CLOCKHZ/1000)
 	{
-		lv_tick_inc ((nTicks - m_nLastUpdate) / (CLOCKHZ/1000));
+		lv_timer_handler ();
 
 		m_nLastUpdate = nTicks;
 	}
@@ -259,15 +290,15 @@ void CLVGL::MouseEventHandler (TMouseEvent Event, unsigned nButtons,
 {
 	assert (s_pThis != 0);
 
+	s_pThis->m_PointerData.point.x = nPosX;
+	s_pThis->m_PointerData.point.y = nPosY;
+
 	switch (Event)
 	{
 	case MouseEventMouseDown:
-	case MouseEventMouseMove:
 		if (nButtons & MOUSE_BUTTON_LEFT)
 		{
 			s_pThis->m_PointerData.state = LV_INDEV_STATE_PR;
-			s_pThis->m_PointerData.point.x = nPosX;
-			s_pThis->m_PointerData.point.y = nPosY;
 		}
 		break;
 
@@ -278,6 +309,7 @@ void CLVGL::MouseEventHandler (TMouseEvent Event, unsigned nButtons,
 		}
 		break;
 
+	case MouseEventMouseMove:
 	default:
 		break;
 	}
@@ -334,3 +366,62 @@ void CLVGL::MouseRemovedHandler (CDevice *pDevice, void *pContext)
 	assert (s_pThis != 0);
 	s_pThis->m_pMouseDevice = 0;
 }
+
+void CLVGL::PeriodicTickHandler (void)
+{
+	lv_tick_inc (1000 / HZ);
+}
+
+#if RASPPI >= 5
+
+#define CURSOR_WIDTH	11
+#define CURSOR_HEIGHT	16
+
+static const u8 CursorSymbol[CURSOR_HEIGHT * CURSOR_WIDTH * 3] =
+{
+#define B	0x00, 0x00, 0x00
+#define G	0xCF, 0x7B, 0xFF
+#define W	0x5D, 0xEF, 0xFF
+	G,G,B,B,B,B,B,B,B,B,B,
+	G,W,G,B,B,B,B,B,B,B,B,
+	G,W,W,G,B,B,B,B,B,B,B,
+	G,W,W,W,G,B,B,B,B,B,B,
+	G,W,W,W,W,G,B,B,B,B,B,
+	G,W,W,W,W,W,G,B,B,B,B,
+	G,W,W,W,W,W,W,G,B,B,B,
+	G,W,W,W,W,W,W,W,G,B,B,
+	G,W,W,W,W,W,W,W,W,G,B,
+	G,G,G,G,W,W,G,G,G,G,G,
+	B,B,B,G,W,W,W,G,B,B,B,
+	B,B,B,B,G,W,W,G,B,B,B,
+	B,B,B,B,G,W,W,W,G,B,B,
+	B,B,B,B,B,G,W,W,G,B,B,
+	B,B,B,B,B,G,W,W,W,G,B,
+	B,B,B,B,B,B,G,G,G,G,B,
+};
+
+void CLVGL::SetupCursor (lv_indev_t *pIndev)
+{
+	if (m_pCursorDesc == 0)
+	{
+		m_pCursorDesc = new lv_img_dsc_t;
+		assert (m_pCursorDesc);
+
+		m_pCursorDesc->header.h = CURSOR_HEIGHT;
+		m_pCursorDesc->header.w = CURSOR_WIDTH;
+		m_pCursorDesc->header.cf = LV_IMG_CF_TRUE_COLOR_ALPHA;
+		m_pCursorDesc->header.always_zero = 0;
+		m_pCursorDesc->header.reserved = 0;
+		m_pCursorDesc->data_size = sizeof CursorSymbol;
+		m_pCursorDesc->data = CursorSymbol;
+
+		lv_obj_t *pCursorImage = lv_img_create (lv_scr_act ());
+		assert (pCursorImage != 0);
+		lv_img_set_src (pCursorImage, m_pCursorDesc);
+
+		assert (pIndev != 0);
+		lv_indev_set_cursor (pIndev, pCursorImage);
+	}
+}
+
+#endif

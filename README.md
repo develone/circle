@@ -1,156 +1,112 @@
 Circle
 ======
 
-> If you read this file in an editor you should switch line wrapping on.
-
 Overview
 --------
 
-Circle is a C++ bare metal programming environment for the Raspberry Pi. It should be usable on all existing models (tested on model A+, B, B+, on Raspberry Pi 2, 3, 4, 400 and on Raspberry Pi Zero), except on the Raspberry Pi Pico, which is not supported. Circle provides several ready-tested [C++ classes](doc/classes.txt) and [add-on libraries](addon/README), which can be used to control different hardware features of the Raspberry Pi. Together with Circle there are delivered several [sample programs](sample/README), which demonstrate the use of its classes. Circle can be used to create 32-bit or 64-bit bare metal applications.
+Circle is a C++ bare metal programming environment for the Raspberry Pi. It should be usable on all existing models (tested on model A+, B, B+, on Raspberry Pi 2, 3, 4, 400, 5 and on Raspberry Pi Zero), except on the Raspberry Pi Pico, which is not supported. Circle provides several ready-tested [C++ classes](doc/classes.txt) and [add-on libraries](addon/README), which can be used to control different hardware features of the Raspberry Pi. Together with Circle there are delivered several [sample programs](sample/README), which demonstrate the use of its classes. Circle can be used to create 32-bit or 64-bit bare metal applications.
 
 Circle includes bigger (optional) third-party C-libraries for specific purposes in addon/ now. This is the reason why GitHub rates the project as a C-language-project. The main Circle libraries are written in C++ using classes instead. That's why it is called a C++ programming environment.
 
-Release 44.5
-------------
-
-This intermediate release offers a **revised DWHCI USB low-level driver for the Raspberry Pi 1-3 and Zero**. With the system option `USE_USB_FIQ` one can use the FIQ (Fast Interrupt Request) for this driver, which results in a more accurate timing on the USB. This may improve the compatibility with some USB devices and may help to prevent data loss, especially when receiving MIDI data from some USB MIDI controllers, which do have only small data buffers. Because there is only one FIQ source supported in the system, the FIQ cannot be used for other purpose than the USB with this system option. The xHCI USB driver for the Raspberry Pi 4 does not support this system option and remains unchanged.
-
-To **prevent data loss from USB MIDI controllers on the Raspberry Pi 1-3 and Zero**, there is also the new option `usbboost=true` for the file *cmdline.txt* now. It speeds up the USB MIDI handling, but may generate more system load on the other hand.
-
-The system option `USE_EMBEDDED_MMC_CM4` has been renamed to `USE_EMBEDDED_MMC_CM` and is tested to support **embedded MMC memory** on the Compute Module 3+ and 4.
-
-The `CI2SSoundBaseDevice` class driver for I2S sound devices **supports the WM8960 DAC**.
-
-There is **I2C support in the HD44780 LCD display driver** now.
-
-Bug fixes:
-
-* The Stereo channels were swapped in the `CHDMISoundBaseDevice` class before.
-* There seem to be USB devices, which send more data than it is expected. This fix should prevent a system crash by faking a frame overrun error, which should be handled by the upper layers.
-* Building the WLAN support with the `NDEBUG` option was not possible.
-
-Don't forget to update the used firmware to the one downloadable in [boot/](boot/)!
-
-The 44th Step
+The 46th Step
 -------------
 
-This release comes with new features, improvements and bug fixes. There is a new HDMI sound driver class `CHDMISoundBaseDevice`, which allows to generate **HDMI sound without VCHIQ** driver, which can be easier to integrate in an application. This is shown by the [sample/29-miniorgan](sample/29-miniorgan) and [sample/34-sounddevices](sample/34-sounddevices). On the Raspberry Pi 4 only the connector HDMI0 is supported. The class `CI2SSoundBaseDevice` now supports the **PCM5122 DAC**.
+With this release Circle initially **supports the Raspberry Pi 5**. There are many features, which are not available yet, but important features like USB and networking are supported. Please see the [Circle documentation](https://circle-rpi.readthedocs.io/en/46.0/appendices/raspberry-pi-5.html) for more information on Raspberry Pi 5 support!
 
-A new class ``C2DGraphics`` has been added to the base library, which provides **2D drawing routines**, which work without flickering or screen tearing. This is demonstrated in the [sample/41-screenanimations](sample/41-screenanimations).
+Circle comes with an **USB serial CDC gadget** now, which allows to communicate with a Circle application from a host computer via a serial interface without an USB serial adapter. This can be tested with the [test/usb-serial-cdc-gadget](test/usb-serial-cdc-gadget/).
 
-The **scheduler library** has been improved and provides the new classes `CMutex` and `CSemaphore`. Multiple tasks can wait for a `CSynchronzationEvent` to be set now.
+The **properties file library** in [addon/Properties](addon/Properties/) supports section headers now.
 
-There is a **new serial bootloader and flash tool** (Flashy), which improves the download speed and reliability. Please see the second part of the file [doc/bootloader.txt](doc/bootloader.txt) for more information! You can interrupt the download process with Ctrl-C now and start again, without resetting your Raspberry Pi. You should update your bootloader kernel image(s) on the SD card in any case. The old flash tool is still available.
-
-Circle comes with a **configure script** now, which can be used to create the configuration file `Config.mk` easier. Please enter `configure -h` for a description of its options.
-
-The C++ support has been improved. Now **placement new operators** and **static objects inside of a function** can be used. Furthermore the **C++17 standard** is optionally supported and can be enabled with the option `--c++17` of `configure`, if you have a toolchain version, which supports it.
-
-Further improvements:
-
-* There is a new system option `NO_BUSY_WAIT`. With this option enabled, the EMMC, SDHOST and USB drivers will **not busy wait for the completion of synchronous transfers** any more. This should improve system throughput and network latency, but requires the scheduler in the system.
-* The **embedded MMC memory of the Compute Module 4** can be accessed, when the system option `USE_EMBEDDED_MMC_CM4` has been defined.
-* The class `CTFTPFatFsFileServer` was added to [addon/tftpfileserver](addon/tftpfileserver) to support **TFTP access with the FatFs filesystem module**.
-* The class `CDS18x20` in [addon/OneWire](addon/OneWire) has been improved and is now part of the library, not of the sample as before. It determines the used power mode of the sensor automatically.
-* Functions for **atomic memory access** have been added to `<circle/atomic.h>`.
-
-Bug fixes:
-
-* System timer IRQ handling may have stopped working after a while on the Raspberry Pi 1 and Zero before.
-* xHCI USB controller did not work on some Raspberry Pi 4 models.
-* Starting secondary cores 1-3 was not reliable.
-* Access to USB mass-storage devices was not reliable on Raspberry Pi Model A+, 3A+ and Zero before.
-* Add workaround for non-compliant low-speed USB devices with bulk endpoints.
-* Suppress concurrent split IN/OUT requests on Raspberry Pi 1-3 and Zero in USB serial drivers.
-* Enable serial FIFO in polling mode too.
-* The screen size select-able in *cmdline.txt* was limited to 1920x1080 before.
-* Semaphore implementation in *addon/linux* was not IRQ safe, but used from IRQ handler in VCHIQ driver.
-* Allow received text segment in TCP state SYN-RECEIVED.
-
-Don't forget to update the used firmware to the one downloadable in [boot/](boot/)!
+A possible race condition in `CTimer` has been fixed, which could only occur with the KY-040 rotary encoder module driver.
 
 Features
 --------
 
+> Only the features with a "x" or other info are currently supported on the Raspberry Pi 5.
+
 Circle supports the following features:
 
-| Group                 | Features                                            |
-|-----------------------|-----------------------------------------------------|
-| C++ build environment | AArch32 and AArch64 support                         |
-|                       | Basic library functions (e.g. new and delete)       |
-|                       | Enables all CPU caches using the MMU                |
-|                       | Interrupt support (IRQ and FIQ)                     |
-|                       | Multi-core support (Raspberry Pi 2, 3 and 4)        |
-|                       | Cooperative non-preemtive scheduler                 |
-|                       | CPU clock rate management                           |
-|                       |                                                     |
-| Debug support         | Kernel logging to screen, UART and/or syslog server |
-|                       | C-assertions with stack trace                       |
-|                       | Hardware exception handler with stack trace         |
-|                       | GDB support using rpi_stub (Raspberry Pi 2 and 3)   |
-|                       | Serial bootloader (by David Welch) included         |
-|                       | Software profiling support (single-core)            |
-|                       | QEMU support                                        |
-|                       |                                                     |
-| SoC devices           | GPIO pins (with interrupt, Act LED) and clocks      |
-|                       | Frame buffer (screen driver with escape sequences)  |
-|                       | UART(s) (Polling and interrupt driver)              |
-|                       | System timer (with kernel timers)                   |
-|                       | Platform DMA controller                             |
-|                       | EMMC SD card interface driver                       |
-|                       | SDHOST SD card interface driver (Raspberry Pi 1-3)  |
-|                       | PWM output (2 channels)                             |
-|                       | PWM sound output (on headphone jack)                |
-|                       | I2C master(s) and slave                             |
-|                       | SPI0 master (Polling and DMA driver)                |
-|                       | SPI1 auxiliary master (Polling)                     |
-|                       | SPI3-6 masters of Raspberry Pi 4 (Polling)          |
-|                       | SMI master (experimental)                           |
-|                       | I2S sound output and input                          |
-|                       | HDMI sound output (without VCHIQ)                   |
-|                       | Hardware random number generator                    |
-|                       | Watchdog device                                     |
-|                       | Official Raspberry Pi touch screen                  |
-|                       | VCHIQ interface and audio service drivers           |
-|                       | BCM54213PE Gigabit Ethernet NIC of Raspberry Pi 4   |
-|                       | Wireless LAN access                                 |
-|                       |                                                     |
-| USB                   | Host controller interface (HCI) drivers             |
-|                       | Standard hub driver (USB 2.0 only)                  |
-|                       | HID class device drivers (keyboard, mouse, gamepad) |
-|                       | Driver for on-board Ethernet device (SMSC951x)      |
-|                       | Driver for on-board Ethernet device (LAN7800)       |
-|                       | Driver for USB mass storage devices (bulk only)     |
-|                       | Drivers for different USB serial devices            |
-|                       | Audio class MIDI input support                      |
-|                       | Touchscreen driver (digitizer mode)                 |
-|                       | Printer driver                                      |
-|                       |                                                     |
-| File systems          | Internal FAT driver (limited function)              |
-|                       | FatFs driver (full function, by ChaN)               |
-|                       |                                                     |
-| TCP/IP networking     | Protocols: ARP, IP, ICMP, UDP, TCP                  |
-|                       | Clients: DHCP, DNS, NTP, HTTP, Syslog, MQTT         |
-|                       | Servers: HTTP, TFTP                                 |
-|                       | BSD-like C++ socket API                             |
-|                       |                                                     |
-| Graphics              | OpenGL ES 1.1 and 2.0, OpenVG 1.1, EGL 1.4          |
-|                       | (not on Raspberry Pi 4)                             |
-|                       | uGUI (by Achim Doebler)                             |
-|                       | LVGL (by LVGL Kft)                                  |
-|                       | 2D graphics class in base library                   |
-|                       |                                                     |
-| Not supported         | Bluetooth                                           |
-|                       | Camera                                              |
-|                       | USB device (gadget) mode                            |
-|                       | USB isochronous transfers and audio                 |
+| Group                 | Features                                            | Raspberry Pi 5 |
+|-----------------------|-----------------------------------------------------|----------------|
+| C++ build environment | AArch32 and AArch64 support                         | AArch64 only   |
+|                       | Basic library functions (e.g. new and delete)       | x              |
+|                       | Enables all CPU caches using the MMU                | x              |
+|                       | Interrupt support (IRQ and FIQ)                     | IRQ only       |
+|                       | Multi-core support (Raspberry Pi 2, 3 and 4)        | x              |
+|                       | Cooperative non-preemtive scheduler                 | x              |
+|                       | CPU clock rate management                           | x              |
+|                       | Clang/LLVM support (experimental)                   | x              |
+|                       |                                                     |                |
+| Debug support         | Kernel logging to screen, UART and/or syslog server | screen / UART  |
+|                       | C-assertions with stack trace                       | x              |
+|                       | Hardware exception handler with stack trace         | x              |
+|                       | GDB support using rpi_stub (Raspberry Pi 2 and 3)   |                |
+|                       | Serial bootloader (by David Welch) included         | x              |
+|                       | Software profiling support (single-core)            | x              |
+|                       | QEMU support                                        |                |
+|                       |                                                     |                |
+| SoC devices           | GPIO pins (with interrupt, Act LED) and clocks      | no clocks      |
+|                       | Frame buffer (screen driver with escape sequences)  | limited        |
+|                       | UART(s) (Polling and interrupt driver)              | x              |
+|                       | System timer (with kernel timers)                   | x              |
+|                       | Platform DMA controller                             | memcopy only   |
+|                       | EMMC SD card interface driver                       | x              |
+|                       | SDHOST SD card interface driver (Raspberry Pi 1-3)  |                |
+|                       | PWM output (2 channels)                             |                |
+|                       | PWM sound output (on headphone jack)                |                |
+|                       | I2C master(s) and slave                             | masters only   |
+|                       | SPI0 master (Polling and DMA driver)                |                |
+|                       | SPI1 auxiliary master (Polling)                     |                |
+|                       | SPI3-6 masters of Raspberry Pi 4 (Polling)          |                |
+|                       | SMI master (experimental)                           |                |
+|                       | I2S sound output and input                          |                |
+|                       | HDMI sound output (without VCHIQ)                   |                |
+|                       | Hardware random number generator                    | x              |
+|                       | Watchdog device                                     | x              |
+|                       | Official Raspberry Pi touch screen                  |                |
+|                       | VCHIQ interface and audio service drivers           |                |
+|                       | BCM54213PE Gigabit Ethernet NIC of Raspberry Pi 4   |                |
+|                       | MACB / GEM Gigabit Ethernet NIC of Raspberry Pi 5   | x              |
+|                       | Wireless LAN access                                 | x              |
+|                       |                                                     |                |
+| USB                   | Host controller interface (HCI) drivers             | x              |
+|                       | Standard hub driver (USB 2.0 only)                  | x              |
+|                       | HID class device drivers (keyboard, mouse, gamepad) | x              |
+|                       | Driver for on-board Ethernet device (SMSC951x)      |                |
+|                       | Driver for on-board Ethernet device (LAN7800)       |                |
+|                       | Driver for USB mass storage devices (bulk only)     | x              |
+|                       | Driver for USB audio streaming devices (RPi 4 only) | x              |
+|                       | Drivers for different USB serial devices            | x              |
+|                       | Audio class MIDI input support                      | x              |
+|                       | Touchscreen driver (digitizer mode)                 | x              |
+|                       | Printer driver                                      | x              |
+|                       | MIDI gadget driver                                  |                |
+|                       | Serial CDC gadget driver (experimental)             |                |
+|                       |                                                     |                |
+| File systems          | Internal FAT driver (limited function)              | x              |
+|                       | FatFs driver (full function, by ChaN)               | x              |
+|                       |                                                     |                |
+| TCP/IP networking     | Protocols: ARP, IP, ICMP, UDP, TCP                  | x              |
+|                       | Clients: DHCP, DNS, NTP, HTTP, Syslog, MQTT         | x              |
+|                       | Servers: HTTP, TFTP                                 | x              |
+|                       | BSD-like C++ socket API                             | x              |
+|                       |                                                     |                |
+| Graphics              | OpenGL ES 1.1 and 2.0, OpenVG 1.1, EGL 1.4          |                |
+|                       | (not on Raspberry Pi 4)                             |                |
+|                       | uGUI (by Achim Doebler)                             |                |
+|                       | LVGL (by LVGL Kft)                                  | x              |
+|                       | 2D graphics class in base library                   |                |
+|                       |                                                     |                |
+| Not supported         | Bluetooth                                           |                |
 
 Building
 --------
 
 > For building 64-bit applications (AArch64) see the next section.
 
-This describes building on PC Linux. See the file [doc/windows-build.txt](doc/windows-build.txt) for information about building on Windows. If building for the Raspberry Pi 1 you need a [toolchain](http://elinux.org/Rpi_Software#ARM) for the ARM1176JZF core (with EABI support). For Raspberry Pi 2/3/4 you need a toolchain with Cortex-A7/-A53/-A72 support. A toolchain, which works for all of these, can be downloaded [here](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads). Circle has been tested with the version *10.3-2021.07* (gcc-arm-10.3-2021.07-x86_64-arm-none-eabi.tar.xz) from this website.
+> Circle does not support 32-bit applications on the Raspberry Pi 5.
+
+This describes building on PC Linux. See the file [doc/windows-build.txt](doc/windows-build.txt) for information about building on Windows. If building for the Raspberry Pi 1 you need a [toolchain](http://elinux.org/Rpi_Software#ARM) for the ARM1176JZF core (with EABI support). For Raspberry Pi 2/3/4 you need a toolchain with Cortex-A7/-A53/-A72 support. A toolchain, which works for all of these, can be downloaded [here](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads). Circle has been tested with the version *12.2.Rel1* (arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz) from this website.
 
 First edit the file *Rules.mk* and set the Raspberry Pi version (*RASPPI*, 1, 2, 3 or 4) and the *PREFIX* of your toolchain commands. Alternatively you can create a *Config.mk* file (which is ignored by git) and set the Raspberry Pi version and the *PREFIX* variable to the prefix of your compiler like this (don't forget the dash at the end):
 
@@ -181,20 +137,20 @@ Then go to the build root of Circle and do:
 ./makeall
 ```
 
-By default only the latest sample (with the highest number) is build. The ready build *kernel.img* file should be in its subdirectory of sample/. If you want to build another sample after `makeall` go to its subdirectory and do `make`.
+By default only the Circle libraries are built. To build a sample program after `makeall` go to its subdirectory and do `make`.
 
 You can also build Circle on the Raspberry Pi itself (set `PREFIX =` (empty)) on Raspbian but you need some method to put the *kernel.img* file onto the SD(HC) card. With an external USB card reader on model B+ or Raspberry Pi 2/3/4 model B (4 USB ports) this should be no problem.
 
 AArch64
 -------
 
-Circle supports building 64-bit applications, which can be run on the Raspberry Pi 3 or 4. There are also Raspberry Pi 2 versions and the Raspberry Pi Zero 2, which are based on the BCM2837 SoC. These Raspberry Pi versions can be used too (with `RASPPI = 3`).
+Circle supports building 64-bit applications, which can be run on the Raspberry Pi 3, 4 or 5. There are also Raspberry Pi 2 versions and the Raspberry Pi Zero 2, which are based on the BCM2837 SoC. These Raspberry Pi versions can be used too (with `RASPPI = 3`).
 
-The recommended toolchain to build 64-bit applications with Circle can be downloaded [here](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads). Circle has been tested with the version *10.3-2021.07* (gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz) from this website.
+The recommended toolchain to build 64-bit applications with Circle can be downloaded [here](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads). Circle has been tested with the version *12.2.Rel1* (arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf.tar.xz) from this website.
 
 There are distro-provided toolchains on certain Linux platforms (e.g. *g++-aarch64-linux-gnu* on Ubuntu or *gcc-c++-aarch64-linux-gnu* on Fedora), which may work with Circle and can be a quick way to use it, but you have to test this by yourself. If you encounter problems (e.g. no reaction at all, link failure with external library) using a distro-provided toolchain, please try the recommended toolchain (see above) first, before reporting an issue.
 
-First edit the file *Rules.mk* and set the Raspberry Pi architecture (*AARCH*, 32 or 64) and the *PREFIX64* of your toolchain commands. The *RASPPI* variable has to be set to 3 or 4 for `AARCH = 64`. Alternatively you can create a *Config.mk* file (which is ignored by git) and set the Raspberry Pi architecture and the *PREFIX64* variable to the prefix of your compiler like this (don't forget the dash at the end):
+First edit the file *Rules.mk* and set the Raspberry Pi architecture (*AARCH*, 32 or 64) and the *PREFIX64* of your toolchain commands. The *RASPPI* variable has to be set to 3, 4 or 5 for `AARCH = 64`. Alternatively you can create a *Config.mk* file (which is ignored by git) and set the Raspberry Pi architecture and the *PREFIX64* variable to the prefix of your compiler like this (don't forget the dash at the end):
 
 ```
 AARCH = 64
@@ -211,16 +167,16 @@ Then go to the build root of Circle and do:
 ./makeall
 ```
 
-By default only the latest sample (with the highest number) is build. The ready build *kernel8.img* or *kernel8-rpi4.img* file should be in its subdirectory of sample/. If you want to build another sample after `makeall` go to its subdirectory and do `make`.
+By default only the Circle libraries are built. To build a sample program after `makeall` go to its subdirectory and do `make`.
 
 Installation
 ------------
 
-Copy the Raspberry Pi firmware (from boot/ directory, do *make* there to get them) files along with the *kernel.img* (from sample/ subdirectory) to a SD(HC) card with FAT file system. Put the SD(HC) card into the Raspberry Pi.
+Copy the Raspberry Pi firmware (from boot/ directory, do *make* there to get them) files along with the *kernel\*.img* (from sample/ subdirectory) to a SD(HC) card with FAT file system.
 
-The *config32.txt* file, provided in the boot/ directory, is needed to enable FIQ use in 32-bit mode on the Raspberry Pi 4 and has to be copied to the SD card in this case (rename it to config.txt). Furthermore the additional file *armstub7-rpi4.bin* is required on the SD card then. Please see [boot/README](boot/README) for information on how to build this file.
+It is now always recommended to copy the file *config32.txt* (for 32-bit mode) or *config64.txt* (for 64-bit mode) from the boot/ directory to the SD(HC) card and to rename it to *config.txt* there. These files are especially required to enable FIQ use on the Raspberry Pi 4. Furthermore the additional file *armstub7-rpi4.bin* (for 32-bit mode) or *armstub8-rpi4.bin* (for 64-bit mode) is required on the SD card then. Please see [boot/README](boot/README) for information on how to build these files.
 
-The *config64.txt* file, provided in the boot/ directory, is needed to enable 64-bit mode and has to be copied to the SD card in this case (rename it to config.txt). FIQ support for AArch64 on the Raspberry Pi 4 requires an additional file *armstub8-rpi4.bin* on the SD card. Please see [boot/README](boot/README) for information on how to build this file.
+Finally put the SD(HC) card into the Raspberry Pi.
 
 Directories
 -----------
@@ -242,29 +198,18 @@ The following C++ classes were added to Circle:
 
 Base library
 
-* C2DGraphics: Software graphics library with VSync and hardware-accelerated double buffering
-* CBcmWatchdog: Driver for the BCM2835 watchdog device
-* CDMASoundBuffers: Concatenated DMA buffers to be used by sound device drivers
-* CGenericLock: Locks a resource with or without scheduler
-* CHDMISoundBaseDevice: Low level access to the HDMI sound device (without VCHIQ)
-* CMPHIDevice: A driver, which uses the MPHI device to generate an IRQ
-* CPtrListFIQ: Container class. List of pointers, usable from FIQ_LEVEL
-* CSMIMaster: Driver for the Second Memory Interface
+* CMACBDevice: Driver for MACB/GEM Ethernet NIC of Raspberry Pi 5
+* CSouthbridge: Driver for the RP1 multi-function device of the Raspberry Pi 5
 
 USB library
 
-* CDWHCICompletionQueue: Queues USB requests ready for completion (with USE_USB_FIQ enabled)
-* CUSBTouchScreenDevice: Driver for USB HID-class touchscreens
+* CUSBSerialHostDevice: Generic host driver for USB serial devices (was: CUSBSerialDevice)
+* CUSBSubSystem: USB sub-system of the Raspberry Pi 5
 
-Input library
+USB gadget library
 
-* CRPiTouchScreen: Driver for the official Raspberry Pi touch screen
-* CTouchScreenDevice: Generic touch screen interface device
-
-Scheduler library
-
-* CMutex: Provides a method to provide mutual exclusion (critical sections) across tasks
-* CSemaphore: Implements a semaphore synchronization class
+* CUSBCDCGadget: USB serial CDC gadget
+* CUSBCDCGadgetEndpoint: Endpoint of the USB serial CDC gadget
 
 The available Circle classes are listed in the file [doc/classes.txt](doc/classes.txt). If you have Doxygen installed on your computer you can build a [class documentation](doc/html/index.html) in doc/html/ using:
 
@@ -289,6 +234,7 @@ Additional Topics
 * [cmdline.txt options](doc/cmdline.txt)
 * [Screen escape sequences](doc/screen.txt)
 * [Keyboard escape sequences](doc/keyboard.txt)
+* [Clang support](doc/clang-support.txt)
 * [Memory layout](doc/memorymap.txt)
 * [Naming conventions](doc/naming-conventions.txt)
 * [Known issues](doc/issues.txt)
@@ -296,7 +242,7 @@ Additional Topics
 Trademarks
 ----------
 
-Raspberry Pi is a trademark of Raspberry Pi Trading.
+Raspberry Pi is a trademark of Raspberry Pi Ltd.
 
 Linux is a trademark of Linus Torvalds.
 

@@ -2,7 +2,7 @@
 // memory64.cpp
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2014-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2014-2024  R. Stange <rsta2@o2online.de>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -58,22 +58,6 @@ CMemorySystem::CMemorySystem (boolean bEnableMMU)
 	size_t nBlockReserve = m_nMemSize - MEM_HEAP_START - PAGE_RESERVE;
 	m_HeapLow.Setup (MEM_HEAP_START, nBlockReserve, 0x40000);
 
-#if RASPPI >= 4
-	unsigned nRAMSize = CMachineInfo::Get ()->GetRAMSize ();
-	if (nRAMSize > 1024)
-	{
-		u64 nHighSize = (nRAMSize - 1024) * MEGABYTE;
-		if (nHighSize > MEM_HIGHMEM_END+1 - MEM_HIGHMEM_START)
-		{
-			nHighSize = MEM_HIGHMEM_END+1 - MEM_HIGHMEM_START;
-		}
-
-		m_nMemSizeHigh = (size_t) nHighSize;
-
-		m_HeapHigh.Setup (MEM_HIGHMEM_START, (size_t) nHighSize, 0);
-	}
-#endif
-
 	m_Pager.Setup (MEM_HEAP_START + nBlockReserve, PAGE_RESERVE);
 
 	if (m_bEnableMMU)
@@ -83,9 +67,7 @@ CMemorySystem::CMemorySystem (boolean bEnableMMU)
 
 		EnableMMU ();
 
-#ifdef ARM_ALLOW_MULTI_CORE
-		CSpinLock::Enable ();
-#endif
+		InstructionSyncBarrier ();
 	}
 }
 
@@ -105,7 +87,7 @@ void CMemorySystem::Destructor (void)
 	if (m_bEnableMMU)
 	{
 		// disable MMU and data cache
-		u32 nSCTLR_EL1;
+		u64 nSCTLR_EL1;
 		asm volatile ("mrs %0, sctlr_el1" : "=r" (nSCTLR_EL1));
 		nSCTLR_EL1 &= ~(SCTLR_EL1_M | SCTLR_EL1_C);
 		asm volatile ("msr sctlr_el1, %0" : : "r" (nSCTLR_EL1) : "memory");
@@ -122,6 +104,27 @@ void CMemorySystem::Destructor (void)
 	}
 }
 
+#if RASPPI >= 4
+
+void CMemorySystem::SetupHighMem (void)
+{
+	unsigned nRAMSize = CMachineInfo::Get ()->GetRAMSize ();
+	if (nRAMSize > 1024)
+	{
+		u64 nHighSize = (nRAMSize - 1024) * MEGABYTE;
+		if (nHighSize > MEM_HIGHMEM_END+1 - MEM_HIGHMEM_START)
+		{
+			nHighSize = MEM_HIGHMEM_END+1 - MEM_HIGHMEM_START;
+		}
+
+		m_nMemSizeHigh = (size_t) nHighSize;
+
+		m_HeapHigh.Setup (MEM_HIGHMEM_START, (size_t) nHighSize, 0);
+	}
+}
+
+#endif
+
 #ifdef ARM_ALLOW_MULTI_CORE
 
 void CMemorySystem::InitializeSecondary (void)
@@ -130,6 +133,8 @@ void CMemorySystem::InitializeSecondary (void)
 	assert (s_pThis->m_bEnableMMU);		// required to use spin locks
 
 	s_pThis->EnableMMU ();
+
+	InstructionSyncBarrier ();
 }
 
 #endif
@@ -176,13 +181,16 @@ void CMemorySystem::EnableMMU (void)
 #if RASPPI == 3
 		    | TCR_EL1_IPS_4GB	    << TCR_EL1_IPS__SHIFT
 		    | TCR_EL1_T0SZ_4GB	    << TCR_EL1_T0SZ__SHIFT;
-#else
+#elif RASPPI == 4
 		    | TCR_EL1_IPS_64GB	    << TCR_EL1_IPS__SHIFT
 		    | TCR_EL1_T0SZ_64GB	    << TCR_EL1_T0SZ__SHIFT;
+#else
+		    | TCR_EL1_IPS_1TB	    << TCR_EL1_IPS__SHIFT
+		    | TCR_EL1_T0SZ_128GB    << TCR_EL1_T0SZ__SHIFT;
 #endif
 	asm volatile ("msr tcr_el1, %0" : : "r" (nTCR_EL1));
 
-	u32 nSCTLR_EL1;
+	u64 nSCTLR_EL1;
 	asm volatile ("mrs %0, sctlr_el1" : "=r" (nSCTLR_EL1));
 	nSCTLR_EL1 &= ~(  SCTLR_EL1_WXN
 			| SCTLR_EL1_A);

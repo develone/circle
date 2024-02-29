@@ -2,7 +2,7 @@
 // sysinit.cpp
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2014-2021  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2014-2024  R. Stange <rsta2@o2online.de>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,10 +23,15 @@
 #include <circle/bcm2836.h>
 #include <circle/machineinfo.h>
 #include <circle/memory.h>
+#include <circle/interrupt.h>
+#include <circle/southbridge.h>
+#include <circle/actled.h>
+#include <circle/timer.h>
 #include <circle/chainboot.h>
 #include <circle/qemu.h>
 #include <circle/synchronize.h>
 #include <circle/sysconfig.h>
+#include <circle/memorymap.h>
 #include <circle/version.h>
 #include <circle/string.h>
 #include <circle/macros.h>
@@ -46,7 +51,7 @@ void __aeabi_atexit (void *pThis, void (*pFunc)(void *pThis), void *pHandle)
 	// TODO
 }
 
-#if AARCH == 64
+#if AARCH == 64 || defined (__clang__)
 
 void __cxa_atexit (void *pThis, void (*pFunc)(void *pThis), void *pHandle) WEAK;
 
@@ -95,6 +100,9 @@ void halt (void)
 #else
 	u64 nMPIDR;
 	asm volatile ("mrs %0, mpidr_el1" : "=r" (nMPIDR));
+#endif
+#if RASPPI >= 5
+	nMPIDR >>= 8;
 #endif
 	unsigned nCore = nMPIDR & (CORES-1);
 
@@ -147,6 +155,18 @@ void halt (void)
 	}
 }
 
+void error_halt (unsigned errnum)
+{
+	CActLED ActLED;
+
+	while (1)
+	{
+		ActLED.Blink (errnum, 100, 300);
+
+		CTimer::SimpleMsDelay (1000);
+	}
+}
+
 void reboot (void)					// by PlutoniumBob@raspi-forum
 {
 	PeripheralEntry ();
@@ -158,6 +178,23 @@ void reboot (void)					// by PlutoniumBob@raspi-forum
 
 	for (;;);					// wait for reset
 }
+
+#if RASPPI >= 5
+
+void poweroff (void)
+{
+	asm volatile
+	(
+		"mov	x0, %0\n"
+		"smc	#0\n"
+
+		:: "r" (0x84000008UL)			// function code SYSTEM_OFF
+	);
+
+	for (;;);
+}
+
+#endif
 
 #if AARCH == 32
 
@@ -209,12 +246,19 @@ void sysinit (void)
 	extern unsigned char _end;
 	memset (&__bss_start, 0, &_end - &__bss_start);
 
-	CMachineInfo MachineInfo;
+	// halt, if KERNEL_MAX_SIZE is not properly set
+	// cannot inform the user here
+	if (MEM_KERNEL_END < reinterpret_cast<uintptr> (&_end))
+	{
+		halt ();
+	}
 
 	CMemorySystem Memory;
 
+	CMachineInfo MachineInfo;
+
 #if RASPPI >= 4
-	MachineInfo.FetchDTB ();
+	Memory.SetupHighMem ();
 #endif
 
 	// set circle_version_string[]
@@ -235,6 +279,20 @@ void sysinit (void)
 
 	strcpy (circle_version_string, Version);
 
+	CInterruptSystem InterruptSystem;
+	if (!InterruptSystem.Initialize ())
+	{
+		error_halt (2);
+	}
+
+#if RASPPI >= 5 && !defined (NO_SOUTHBRIDGE_EARLY)
+	CSouthbridge Southbridge (&InterruptSystem);
+	if (!Southbridge.Initialize ())
+	{
+		error_halt (3);
+	}
+#endif
+
 	// call constructors of static objects
 	extern void (*__init_start) (void);
 	extern void (*__init_end) (void);
@@ -243,11 +301,12 @@ void sysinit (void)
 		(**pFunc) ();
 	}
 
-	extern int main (void);
-	if (main () == EXIT_REBOOT)
+	extern int MAINPROC (void);
+	if (MAINPROC () == EXIT_REBOOT)
 	{
 		if (IsChainBootEnabled ())
 		{
+			InterruptSystem.Destructor ();
 			Memory.Destructor ();
 
 			DisableFIQs ();

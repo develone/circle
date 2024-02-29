@@ -2,7 +2,7 @@
 // xhci.h
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2019-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2019-2023  R. Stange <rsta2@o2online.de>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,11 +60,6 @@
 //
 #define XHCI_REG_CAP_CAPLENGTH		0x00
 #define XHCI_REG_CAP_HCIVERSION		0x02
-#ifdef USE_XHCI_INTERNAL
-	#define XHCI_SUPPORTED_VERSION				0x110
-#else
-	#define XHCI_SUPPORTED_VERSION				0x100
-#endif
 #define XHCI_REG_CAP_HCSPARAMS1		0x04
 	#define XHCI_REG_CAP_HCSPARAMS1_MAX_SLOTS__MASK		0xFF
 	#define XHCI_REG_CAP_HCSPARAMS1_MAX_INTRS__SHIFT	8
@@ -331,7 +326,10 @@ PACKED;
 #define XHCI_TRB_COMPLETION_CODE_SUCCESS			1
 #define XHCI_TRB_COMPLETION_CODE_NO_SLOTS_AVAILABLE_ERROR	9
 #define XHCI_TRB_COMPLETION_CODE_SHORT_PACKET			13
+#define XHCI_TRB_COMPLETION_CODE_RING_UNDERRUN			14
 #define XHCI_TRB_COMPLETION_CODE_RING_OVERRUN			15
+#define XHCI_TRB_COMPLETION_CODE_EVENT_RING_FULL_ERROR		21
+#define XHCI_TRB_COMPLETION_CODE_MISSED_SERVICE_ERROR		23
 
 // Link TRB
 #define XHCI_LINK_TRB_CONTROL_TC				(1 << 1)
@@ -385,6 +383,10 @@ PACKED;
 #define XHCI_TRANSFER_TRB_CONTROL_IDT				(1 << 6)
 #define XHCI_TRANSFER_TRB_CONTROL_DIR_IN			(1 << 16)
 
+#define XHCI_TRANSFER_TRB_CONTROL_FRAME_ID__SHIFT		20		// Isoch TRB
+#define XHCI_TRANSFER_TRB_CONTROL_FRAME_ID__MASK		(0x7FF << 20)
+#define XHCI_TRANSFER_TRB_CONTROL_SIA				(1 << 31)
+
 //
 // Event Ring Segment Table Entry
 //
@@ -426,13 +428,13 @@ struct TXHCISlotContext
 
 	u32	RsvdO[4];
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 	u32	RsvdO1[8];
 #endif
 }
 PACKED;
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 ASSERT_STATIC (sizeof (TXHCISlotContext) == 0x40);
 #else
 ASSERT_STATIC (sizeof (TXHCISlotContext) == 0x20);
@@ -471,13 +473,13 @@ struct TXHCIEndpointContext
 
 	u32	RsvdO[3];
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 	u32	RsvdO1[8];
 #endif
 }
 PACKED;
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 ASSERT_STATIC (sizeof (TXHCIEndpointContext) == 0x40);
 #else
 ASSERT_STATIC (sizeof (TXHCIEndpointContext) == 0x20);
@@ -491,7 +493,7 @@ struct TXHCIDeviceContext
 }
 PACKED;
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 ASSERT_STATIC (sizeof (TXHCIDeviceContext) == 0x800);
 #else
 ASSERT_STATIC (sizeof (TXHCIDeviceContext) == 0x400);
@@ -503,13 +505,13 @@ struct TXHCIInputControlContext
 	u32	AddContextFlags;
 	u32	RsvdZ[6];
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 	u32	RsvdZ1[8];
 #endif
 }
 PACKED;
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 ASSERT_STATIC (sizeof (TXHCIInputControlContext) == 0x40);
 #else
 ASSERT_STATIC (sizeof (TXHCIInputControlContext) == 0x20);
@@ -522,7 +524,7 @@ struct TXHCIInputContext
 }
 PACKED;
 
-#ifdef USE_XHCI_INTERNAL
+#if XHCI_CONTEXT_SIZE == 64
 ASSERT_STATIC (sizeof (TXHCIInputContext) == 0x840);
 #else
 ASSERT_STATIC (sizeof (TXHCIInputContext) == 0x420);

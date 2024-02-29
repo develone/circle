@@ -2,7 +2,7 @@
 // dmachannel.cpp
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2014-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2014-2023  R. Stange <rsta2@o2online.de>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,8 +26,13 @@
 #include <circle/new.h>
 #include <assert.h>
 
+#if RASPPI == 4
 #define DMA4_CHANNEL_MIN		11
 #define DMA4_CHANNEL_MAX		14
+#else
+#define DMA4_CHANNEL_MIN		6
+#define DMA4_CHANNEL_MAX		11
+#endif
 
 #define ARM_DMA4CHAN_CS(chan)		(ARM_DMA_BASE + ((chan) * 0x100) + 0x00)
 	#define CS4_HALT			(1 << 31)
@@ -87,8 +92,10 @@
 		#define LEN4_XLENGTH_MAX		0x3FFFFFFF
 		#define LEN4_XLENGTH_2D_MAX		0xFFFF
 #define ARM_DMA4CHAN_NEXTCONBK(chan)	(ARM_DMA_BASE + ((chan) * 0x100) + 0x28)
+#if RASPPI == 4
 #define ARM_DMA_INT_STATUS		(ARM_DMA_BASE + 0xFE0)
 #define ARM_DMA_ENABLE			(ARM_DMA_BASE + 0xFF0)
+#endif
 
 #if AARCH == 32
 	#define ADDRESS4_LOW(ptr)	((uintptr) (ptr))
@@ -108,22 +115,31 @@ CDMA4Channel::CDMA4Channel (unsigned nChannel, CInterruptSystem *pInterruptSyste
 	m_pCompletionParam (0),
 	m_bStatus (FALSE)
 {
+	PeripheralEntry();
+
 	assert (m_nChannel >= DMA4_CHANNEL_MIN);
 	assert (m_nChannel <= DMA4_CHANNEL_MAX);
+#if RASPPI == 4
 	assert (   (read32 (ARM_DMA4CHAN_DEBUG (m_nChannel)) & DEBUG4_VERSION_MASK)
 		>> DEBUG4_VERSION_SHIFT == DMA4_VERSION);
+#endif
 
-	m_pControlBlockBuffer = new (HEAP_ANY) u8[sizeof (TDMA4ControlBlock) + 255];
+	m_pControlBlockBuffer = new (HEAP_ANY) u8[sizeof (TDMA4ControlBlock) + 31];
 	assert (m_pControlBlockBuffer != 0);
 
-	m_pControlBlock = (TDMA4ControlBlock *) (((uintptr) m_pControlBlockBuffer + 255) & ~255);
+	m_pControlBlock = (TDMA4ControlBlock *) (((uintptr) m_pControlBlockBuffer + 31) & ~31);
 	m_pControlBlock->nReserved = 0;
 
+	write32 (ARM_DMA4CHAN_CONBLK_AD (m_nChannel), 0);
+#if RASPPI == 4
 	write32 (ARM_DMA_ENABLE, read32 (ARM_DMA_ENABLE) | (1 << m_nChannel));
+#endif
 	CTimer::SimpleusDelay (1000);
 
 	write32 (ARM_DMA4CHAN_DEBUG (m_nChannel), DEBUG4_RESET);
 	CTimer::SimpleusDelay (1000);
+
+	PeripheralExit();
 }
 
 CDMA4Channel::~CDMA4Channel (void)
@@ -134,7 +150,9 @@ CDMA4Channel::~CDMA4Channel (void)
 	write32 (ARM_DMA4CHAN_DEBUG (m_nChannel), DEBUG4_RESET);
 	CTimer::SimpleusDelay (1000);
 
+#if RASPPI == 4
 	write32 (ARM_DMA_ENABLE, read32 (ARM_DMA_ENABLE) & ~(1 << m_nChannel));
+#endif
 
 	m_pCompletionRoutine = 0;
 
@@ -142,8 +160,13 @@ CDMA4Channel::~CDMA4Channel (void)
 	{
 		if (m_bIRQConnected)
 		{
+#if RASPPI == 4
 			assert (m_nChannel >= 11);
 			m_pInterruptSystem->DisconnectIRQ (ARM_IRQ_DMA11+m_nChannel-11);
+#else
+			assert (m_nChannel >= 6);
+			m_pInterruptSystem->DisconnectIRQ (ARM_IRQ_DMA6+m_nChannel-6);
+#endif
 		}
 
 		m_pInterruptSystem = 0;
@@ -166,8 +189,7 @@ void CDMA4Channel::SetupMemCopy (void *pDestination, const void *pSource, size_t
 	assert (m_pControlBlock != 0);
 	assert (nLength <= LEN4_XLENGTH_MAX);
 
-	m_pControlBlock->nTransferInformation     =   TI4_WAIT_RD_RESP
-						    | TI4_WAIT_RESP;
+	m_pControlBlock->nTransferInformation     =   0;
 	m_pControlBlock->nSourceAddress           = ADDRESS4_LOW (pSource);
 	m_pControlBlock->nSourceInformation	  =   (SIZE4_128 << SOURCE4_SIZE_SHIFT)
 						    | SOURCE4_INC
@@ -312,8 +334,13 @@ void CDMA4Channel::SetCompletionRoutine (TDMACompletionRoutine *pRoutine, void *
 
 	if (!m_bIRQConnected)
 	{
+#if RASPPI == 4
 		assert (m_nChannel >= 11);
 		m_pInterruptSystem->ConnectIRQ (ARM_IRQ_DMA11+m_nChannel-11, InterruptStub, this);
+#else
+		assert (m_nChannel >= 6);
+		m_pInterruptSystem->ConnectIRQ (ARM_IRQ_DMA6+m_nChannel-6, InterruptStub, this);
+#endif
 
 		m_bIRQConnected = TRUE;
 	}
@@ -337,8 +364,12 @@ void CDMA4Channel::Start (void)
 		m_pControlBlock->nTransferInformation |= TI4_INTEN;
 	}
 
+	PeripheralEntry ();
+
 	assert (!(read32 (ARM_DMA4CHAN_CS (m_nChannel)) & CS4_INT));
+#if RASPPI == 4
 	assert (!(read32 (ARM_DMA_INT_STATUS) & (1 << m_nChannel)));
+#endif
 
 	write32 (ARM_DMA4CHAN_CONBLK_AD (m_nChannel),
 		 (uintptr) m_pControlBlock >> CONBLK_AD4_ADDR_SHIFT);
@@ -349,6 +380,8 @@ void CDMA4Channel::Start (void)
 					      | (DEFAULT_PANIC_QOS4 << CS4_PANIC_QOS_SHIFT)
 					      | (DEFAULT_QOS4 << CS4_QOS_SHIFT)
 					      | CS4_ACTIVE);
+
+	PeripheralExit ();
 }
 
 boolean CDMA4Channel::Wait (void)
@@ -356,6 +389,8 @@ boolean CDMA4Channel::Wait (void)
 	assert (m_nChannel >= DMA4_CHANNEL_MIN);
 	assert (m_nChannel <= DMA4_CHANNEL_MAX);
 	assert (m_pCompletionRoutine == 0);
+
+	PeripheralEntry ();
 
 	u32 nCS;
 	while ((nCS = read32 (ARM_DMA4CHAN_CS (m_nChannel))) & CS4_ACTIVE)
@@ -369,6 +404,8 @@ boolean CDMA4Channel::Wait (void)
 	{
 		CleanAndInvalidateDataCacheRange (m_nDestinationAddress, m_nBufferLength);
 	}
+
+	PeripheralExit();
 
 	return m_bStatus;
 }
@@ -392,12 +429,14 @@ void CDMA4Channel::InterruptHandler (void)
 	assert (m_nChannel >= DMA4_CHANNEL_MIN);
 	assert (m_nChannel <= DMA4_CHANNEL_MAX);
 
+#if RASPPI == 4
 #ifndef NDEBUG
 	u32 nIntStatus = read32 (ARM_DMA_INT_STATUS);
 #endif
 	u32 nIntMask = 1 << m_nChannel;
 	assert (nIntStatus & nIntMask);
 	write32 (ARM_DMA_INT_STATUS, nIntMask);
+#endif
 
 	u32 nCS = read32 (ARM_DMA4CHAN_CS (m_nChannel));
 	assert (nCS & CS4_INT);

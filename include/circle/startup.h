@@ -2,7 +2,7 @@
 // startup.h
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
-// Copyright (C) 2014-2020  R. Stange <rsta2@o2online.de>
+// Copyright (C) 2014-2024  R. Stange <rsta2@o2online.de>
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,17 +24,23 @@
 #include <circle/macros.h>
 #include <circle/types.h>
 
-#define EXIT_HALT	0
-#define EXIT_REBOOT	1
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+int main (void);
+#define EXIT_HALT	0
+#define EXIT_REBOOT	1
+
 void sysinit (void) NORETURN;
 
 void halt (void) NORETURN;
+void error_halt (unsigned errnum) NORETURN;
 void reboot (void) NORETURN;
+
+#if RASPPI >= 5
+void poweroff (void) NORETURN;
+#endif
 
 void set_qemu_exit_status (int nStatus);
 #define EXIT_STATUS_SUCCESS	0
@@ -64,7 +70,7 @@ PACKED;
 
 #endif
 
-#define ARM_DTB_PTR32		(*(u32 *) 0xF8)
+#define ARM_DTB_PTR32		0x000000F8
 
 #ifdef __cplusplus
 }
